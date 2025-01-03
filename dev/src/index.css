@@ -31,7 +31,7 @@ code {
 
 /* Style de la barre de défilement pour les navigateurs modernes (Webkit) */
 ::-webkit-scrollbar {
-  width: 8px; /* Largeur de la barre de défilement */
+  width: 0px; /* Largeur de la barre de défilement */
   height: 8px; /* Hauteur de la barre de défilement horizontale */
 }
 

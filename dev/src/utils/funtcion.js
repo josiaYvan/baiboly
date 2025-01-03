@@ -9,6 +9,20 @@ exports.getBookNames = () => {
   return books;
 };
 
+exports.getChaptersByBookName = (bookName) => {
+  // Récupérer le contenu du livre en utilisant la fonction getContentsByBookName
+  const bookContent = exports.getContentsByBookName(bookName);
+
+  // Si le livre existe, retourner les chapitres
+  if (typeof bookContent === 'object') {
+    return Object.keys(bookContent); // Retourne les chapitres (clé de chaque chapitre)
+  }
+
+  // Si le livre n'est pas trouvé, retourner le message d'erreur
+  console.log('line:23 bookContent\n---> ', bookContent);
+  return bookContent;
+};
+
 exports.searchVerse = (searchTerm) => {
   const results = [];
   const regex = new RegExp(searchTerm, 'i'); // Recherche insensible à la casse

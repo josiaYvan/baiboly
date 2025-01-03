@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import Navbar from '../components/layout/navigation';
 import { myStyle } from '../utils/style';
-// import Footer from '../components/layout/Footer';
 import Welcome from '../components/layout/Welcome';
+// import Footer from '../components/layout/Footer';
 
 function Home() {
   const [themeIsDark, setThemeIsDark] = useState(() => {

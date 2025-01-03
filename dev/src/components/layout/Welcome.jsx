@@ -9,7 +9,7 @@ const { Option } = Select;
 function Welcome({ themeIsDark }) {
   const bookNames = getBookNames();
   const [filteredBooks, setFilteredBooks] = useState(bookNames);
-  const [selectedBook, setSelectedBook] = useState('Genesisy');
+  const [selectedBook, setSelectedBook] = useState('Salamo');
   const [content, setContent] = useState(null);
 
   const handleSearch = (value) => {
@@ -56,7 +56,7 @@ function Welcome({ themeIsDark }) {
             </Select>
           </header>
           <main className='px-6'>
-            <RenderBook bookContent={content} bookName={selectedBook} themeIsDark={themeIsDark} />
+            <RenderBook bookContent={content} bookName={selectedBook} themeIsDark={themeIsDark} setSelectedBook={setSelectedBook} />
           </main>
         </div>
       </motion.div>

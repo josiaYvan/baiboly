@@ -7,7 +7,9 @@ import { myStyle } from '../../utils/style';
 import PaletteColor from './PaletteColor';
 import Menu from './Menu';
 
-export default function RenderBook({ bookContent, bookName, themeIsDark }) {
+export default function RenderBook({
+  bookContent, bookName, themeIsDark, setSelectedBook
+}) {
   const [visibleChapters, setVisibleChapters] = useState([1, 2, 3, 4, 5]);
   const [selectedVerses, setSelectedVerses] = useState([]);
   const [backgroundColor, setBackgroundColor] = useState(myStyle.yellowGround);
@@ -19,28 +21,28 @@ export default function RenderBook({ bookContent, bookName, themeIsDark }) {
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current || {};
     if (!scrollTop || !scrollHeight || !clientHeight) return;
 
+    // Load next chapter on scroll to bottom
     if (scrollTop + clientHeight >= scrollHeight - 10) {
-      setTimeout(() => {
-        setVisibleChapters((prev) => {
-          const nextChapters = Array.from({ length: 5 }, (_, i) => Math.max(...prev) + i + 1);
-          return Math.max(...nextChapters) > Object.keys(bookContent).length ? prev : [...prev, ...nextChapters];
-        });
-      }, 500);
+      setVisibleChapters((prev) => {
+        const nextChapter = Math.max(...prev) + 1;
+        return nextChapter <= Object.keys(bookContent || {}).length ?
+          [...prev.slice(1), nextChapter] :
+          prev;
+      });
     }
 
+    // Load previous chapter on scroll to top
     if (scrollTop <= 10) {
-      setTimeout(() => {
-        setVisibleChapters((prev) => {
-          const prevChapters = Array.from({ length: 5 }, (_, i) => Math.min(...prev) - i - 1).reverse();
-          return Math.min(...prevChapters) < 1 ? prev : [...prevChapters, ...prev];
-        });
-      }, 500);
+      setVisibleChapters((prev) => {
+        const prevChapter = Math.min(...prev) - 1;
+        return prevChapter > 0 ? [prevChapter, ...prev.slice(0, -1)] : prev;
+      });
     }
 
-    // Mise à jour de l'activeChapter
+    // Update active chapter
     let active = activeChapter;
     for (const [chapter, ref] of chapterRefs.current.entries()) {
-      if (ref.offsetTop <= scrollTop + clientHeight / 2) {
+      if (ref && ref.offsetTop <= scrollTop + clientHeight / 2) {
         active = parseInt(chapter, 10);
       }
     }
@@ -140,11 +142,7 @@ export default function RenderBook({ bookContent, bookName, themeIsDark }) {
                   >
                     <p
                       className={`mt-1 px-2 rounded text-lg lora leading-8 cursor-pointer !bg-opacity-5 transition-all ${
-                        selectedVerses.includes(verseKey) ?
-                          'bg-yellow-300' :
-                          themeIsDark ?
-                            'hover:bg-gray-100' :
-                            'hover:bg-gray-900'
+                        selectedVerses.includes(verseKey) ? 'bg-yellow-300' : themeIsDark ? 'hover:bg-gray-100' : 'hover:bg-gray-900'
                       }`}
                       style={{
                         backgroundColor: selectedVerses.includes(verseKey) && backgroundColor
@@ -167,7 +165,7 @@ export default function RenderBook({ bookContent, bookName, themeIsDark }) {
       ) : (
         <p className='italic text-gray-500 text-center'>Aucun contenu disponible pour ce livre.</p>
       )}
-      <Menu bookName={bookName} activeChapter={activeChapter} />
+      <Menu bookName={bookName} activeChapter={activeChapter} onBookSelect={setSelectedBook} />
     </div>
   );
 }
