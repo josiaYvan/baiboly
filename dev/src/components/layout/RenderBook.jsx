@@ -13,7 +13,7 @@ export default function RenderBook({
   const [visibleChapters, setVisibleChapters] = useState([1, 2, 3, 4, 5]);
   const [selectedVerses, setSelectedVerses] = useState([]);
   const [backgroundColor, setBackgroundColor] = useState(myStyle.yellowGround);
-  const [activeChapter, setActiveChapter] = useState(1); // Pour suivre le chapitre actif
+  const [activeChapter, setActiveChapter] = useState(1);
   const containerRef = useRef(null);
   const chapterRefs = useRef(new Map());
 
@@ -21,7 +21,6 @@ export default function RenderBook({
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current || {};
     if (!scrollTop || !scrollHeight || !clientHeight) return;
 
-    // Load next chapter on scroll to bottom
     if (scrollTop + clientHeight >= scrollHeight - 10) {
       setVisibleChapters((prev) => {
         const nextChapter = Math.max(...prev) + 1;
@@ -31,7 +30,6 @@ export default function RenderBook({
       });
     }
 
-    // Load previous chapter on scroll to top
     if (scrollTop <= 10) {
       setVisibleChapters((prev) => {
         const prevChapter = Math.min(...prev) - 1;
@@ -39,7 +37,6 @@ export default function RenderBook({
       });
     }
 
-    // Update active chapter
     let active = activeChapter;
     for (const [chapter, ref] of chapterRefs.current.entries()) {
       if (ref && ref.offsetTop <= scrollTop + clientHeight / 2) {
@@ -94,12 +91,28 @@ export default function RenderBook({
     }
   };
 
+  const changeActiveChapter = (newChapter) => {
+    const chapterNumber = Number(newChapter);
+    if (chapterNumber >= 1 && chapterNumber <= Object.keys(bookContent).length) {
+      const newVisibleChapters = [];
+      if (chapterNumber - 2 > 0) newVisibleChapters.push(chapterNumber - 2);
+      if (chapterNumber - 1 > 0) newVisibleChapters.push(chapterNumber - 1);
+      newVisibleChapters.push(chapterNumber);
+      if (chapterNumber + 1 <= Object.keys(bookContent).length) newVisibleChapters.push(chapterNumber + 1);
+      if (chapterNumber + 2 <= Object.keys(bookContent).length) newVisibleChapters.push(chapterNumber + 2);
+      console.log('line:108 newVisibleChapters\n---> ', newVisibleChapters);
+      setVisibleChapters(newVisibleChapters);
+      setActiveChapter(chapterNumber);
+    }
+  };
+
   useEffect(() => {
     containerRef.current?.addEventListener('scroll', handleScroll);
     return () => containerRef.current?.removeEventListener('scroll', handleScroll);
   }, [bookContent, activeChapter]);
 
   useEffect(() => {
+    console.log('line:134 visibleChapters\n---> ', visibleChapters);
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedVerses, bookContent, visibleChapters]);
@@ -165,7 +178,7 @@ export default function RenderBook({
       ) : (
         <p className='italic text-gray-500 text-center'>Aucun contenu disponible pour ce livre.</p>
       )}
-      <Menu bookName={bookName} activeChapter={activeChapter} onBookSelect={setSelectedBook} />
+      <Menu bookName={bookName} activeChapter={activeChapter} onBookSelect={setSelectedBook} setActiveChapter={changeActiveChapter} />
     </div>
   );
 }

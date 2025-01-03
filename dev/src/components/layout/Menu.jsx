@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/no-array-index-key */
@@ -8,10 +9,11 @@ import { myStyle } from '../../utils/style';
 import { getBookNames, getChaptersByBookName } from '../../utils/funtcion';
 
 function Menu({
-  bookName, activeChapter, onBookSelect
+  bookName, activeChapter, onBookSelect, setActiveChapter
 }) {
   const [selectedBook, setSelectedBook] = useState(null); // Stocker le livre sélectionné
   const [chapter, setChapter] = useState([]);
+  const [popup, setPopup] = useState(false);
   const bookNames = getBookNames();
 
   const textVariants = {
@@ -36,9 +38,19 @@ function Menu({
       setChapter([]); // Effacer les chapitres
     } else {
       setSelectedBook(book); // Sélectionner un nouveau livre
-      setChapter(getChaptersByBookName(book)); // Récupérer les chapitres du livre sélectionné
       onBookSelect(book); // Commenté, décommenter si nécessaire
+      setChapter(getChaptersByBookName(book)); // Récupérer les chapitres du livre sélectionné
     }
+  };
+
+  const handleSetActiveChapter = (n) => {
+    setActiveChapter(n);
+    setPopup(false);
+  };
+
+  const handleBook = () => {
+    setSelectedBook(null);
+    setPopup(true);
   };
 
   return (
@@ -52,7 +64,7 @@ function Menu({
       >
         {/* Afficher le nom du livre/chapitre ou liste des livres */}
         <motion.button
-          onClick={() => setSelectedBook(null)} // Fermer la liste des livres sans sélection
+          onClick={handleBook} // Fermer la liste des livres sans sélection
           variants={textVariants}
           whileHover='hover'
           whileTap='tap'
@@ -61,7 +73,7 @@ function Menu({
           aria-expanded={selectedBook ? 'true' : 'false'}
           aria-label='Select Book'
         >
-          {selectedBook ? `${bookName}  ${activeChapter}` : 'Select Book'}
+          {bookName ? `${bookName}  ${activeChapter}` : 'Select Book'}
         </motion.button>
 
         <motion.ul
@@ -71,28 +83,30 @@ function Menu({
           exit='hidden'
           variants={containerVariants}
         >
-          {bookNames.map((book) => (
+          {popup && bookNames.map((book) => (
             <motion.li
               key={book}
               className='px-2 text-gray-800 '
               variants={itemVariants}
             >
-              <div className=''>
+              <div>
                 <div
                   onClick={() => handleSelect(book)}
-                  className={`hover:bg-gray-100 cursor-pointer p-2 rounded-lg ${
-                    selectedBook === book ? 'font-semibold' : ''
-                  }`}
+                  className={`hover:bg-gray-100 cursor-pointer p-2 rounded-lg ${selectedBook === book ? 'font-semibold' : ''}`}
                 >
                   {book}
                 </div>
                 {/* Affichage des chapitres uniquement si le livre est sélectionné */}
                 {selectedBook === book && chapter.length > 0 && (
                   <div className='grid grid-cols-5 gap-2 mt-2 px-2'>
-                    {chapter.map((n, idx) => (
-                      <div key={idx} className='w-full h-8 rounded-lg border flex justify-center items-center'>
+                    {chapter.map((n) => (
+                      <button
+                        key={n}
+                        className={`w-full h-8 rounded-lg border flex justify-center items-center cursor-pointer hover:bg-gray-100 ${activeChapter === n ? 'bg-yellow-200' : ''}`}
+                        onClick={() => handleSetActiveChapter(n)}
+                      >
                         {n}
-                      </div>
+                      </button>
                     ))}
                   </div>
                 )}
