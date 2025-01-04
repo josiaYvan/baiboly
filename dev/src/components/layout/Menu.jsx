@@ -4,17 +4,18 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable import/no-extraneous-dependencies */
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { myStyle } from '../../utils/style';
 import { getBookNames, getChaptersByBookName } from '../../utils/funtcion';
 
 function Menu({
   bookName, activeChapter, onBookSelect, setActiveChapter
 }) {
-  const [selectedBook, setSelectedBook] = useState(null); // Stocker le livre sélectionné
+  const [selectedBook, setSelectedBook] = useState(null);
   const [chapter, setChapter] = useState([]);
   const [popup, setPopup] = useState(false);
   const bookNames = getBookNames();
+  const menuRef = useRef(null);
 
   const textVariants = {
     initial: { scale: 1 },
@@ -53,8 +54,21 @@ function Menu({
     setPopup(true);
   };
 
+  const handleClickOutside = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setPopup(false); // Fermer le menu si le clic est à l'extérieur
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className='z-20 fixed bottom-8 left-1/2 transform -translate-x-1/2 w-60'>
+    <div ref={menuRef} className='z-20 fixed bottom-8 left-1/2 transform -translate-x-1/2 w-60'>
       <motion.div
         className='p-2 rounded-full flex justify-around items-center backdrop-blur-md shadow-lg'
         style={{ backgroundColor: myStyle.yellowDark }}
@@ -76,44 +90,46 @@ function Menu({
           {bookName ? `${bookName}  ${activeChapter}` : 'Select Book'}
         </motion.button>
 
-        <motion.ul
-          className='absolute bottom-full mb-2 left-0 right-0 bg-white rounded-lg shadow-lg max-h-60 overflow-y-auto'
-          initial='hidden'
-          animate='visible'
-          exit='hidden'
-          variants={containerVariants}
-        >
-          {popup && bookNames.map((book) => (
-            <motion.li
-              key={book}
-              className='px-2 text-gray-800 '
-              variants={itemVariants}
-            >
-              <div>
-                <div
-                  onClick={() => handleSelect(book)}
-                  className={`hover:bg-gray-100 cursor-pointer p-2 rounded-lg ${selectedBook === book ? 'font-semibold' : ''}`}
-                >
-                  {book}
-                </div>
-                {/* Affichage des chapitres uniquement si le livre est sélectionné */}
-                {selectedBook === book && chapter.length > 0 && (
-                  <div className='grid grid-cols-5 gap-2 mt-2 px-2'>
-                    {chapter.map((n) => (
-                      <button
-                        key={n}
-                        className={`w-full h-8 rounded-lg border flex justify-center items-center cursor-pointer hover:bg-gray-100 ${activeChapter === n ? 'bg-yellow-200' : ''}`}
-                        onClick={() => handleSetActiveChapter(n)}
-                      >
-                        {n}
-                      </button>
-                    ))}
+        {popup && (
+          <motion.ul
+            className='absolute bottom-full mb-2 py-2 left-0 right-0 bg-white rounded-lg shadow-lg max-h-60 overflow-y-auto'
+            initial='hidden'
+            animate='visible'
+            exit='hidden'
+            variants={containerVariants}
+          >
+            {bookNames.map((book) => (
+              <motion.li
+                key={book}
+                className='px-2 text-gray-800 '
+                variants={itemVariants}
+              >
+                <div>
+                  <div
+                    onClick={() => handleSelect(book)}
+                    className={`hover:bg-gray-100 cursor-pointer p-2 rounded-lg ${selectedBook === book ? 'font-semibold' : ''}`}
+                  >
+                    {book}
                   </div>
-                )}
-              </div>
-            </motion.li>
-          ))}
-        </motion.ul>
+                  {/* Affichage des chapitres uniquement si le livre est sélectionné */}
+                  {selectedBook === book && chapter.length > 0 && (
+                    <div className='grid grid-cols-5 gap-2 mt-2 px-2'>
+                      {chapter.map((n) => (
+                        <button
+                          key={n}
+                          className={`w-full h-8 rounded-lg border flex justify-center items-center cursor-pointer hover:bg-gray-100 ${activeChapter === n ? 'bg-yellow-200' : ''}`}
+                          onClick={() => handleSetActiveChapter(n)}
+                        >
+                          {n}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </motion.li>
+            ))}
+          </motion.ul>
+        )}
       </motion.div>
     </div>
   );
