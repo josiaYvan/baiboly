@@ -9,7 +9,7 @@ const { Option } = Select;
 function Welcome({ themeIsDark }) {
   const bookNames = getBookNames();
   const [filteredBooks, setFilteredBooks] = useState(bookNames);
-  const [selectedBook, setSelectedBook] = useState('Salamo');
+  const [selectedBook, setSelectedBook] = useState('Matio');
   const [content, setContent] = useState(null);
 
   const handleSearch = (value) => {

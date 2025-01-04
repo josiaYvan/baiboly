@@ -68,6 +68,35 @@ exports.getContentsByBookName = (bookName) => {
   return `Livre ${bookName} non trouvé dans les deux testaments`;
 };
 
+exports.getProximityContentsByBookName = (bookName) => {
+  const oldTestament = baiboly[0]['Testamenta taloha'];
+  const newTestament = baiboly[0]['Testamenta vaovao'];
+
+  const allBooks = [
+    ...Object.keys(oldTestament || {}),
+    ...Object.keys(newTestament || {})
+  ];
+
+  const bookIndex = allBooks.indexOf(bookName);
+
+  if (bookIndex === -1) {
+    return { error: `Livre ${bookName} non trouvé dans les deux testaments` };
+  }
+
+  // Obtenir les noms des livres précédent, courant et suivant
+  const previousBook = bookIndex > 0 ? allBooks[bookIndex - 1] : null;
+  const nextBook = bookIndex < allBooks.length - 1 ? allBooks[bookIndex + 1] : null;
+
+  // Obtenir les contenus des livres
+  const getContent = (name) => (oldTestament[name] || newTestament[name]) ?? null;
+
+  return {
+    current: { name: bookName, content: getContent(bookName) },
+    previous: previousBook ? { name: previousBook, content: getContent(previousBook) } : null,
+    next: nextBook ? { name: nextBook, content: getContent(nextBook) } : null
+  };
+};
+
 exports.renderBook = (content) => {
   const container = document.getElementById('book-content');
   for (const [chapter, verses] of Object.entries(content)) {
