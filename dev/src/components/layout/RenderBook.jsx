@@ -52,6 +52,14 @@ export default function RenderBook({
     }
   };
 
+  const scrollToVerse = (verseKey) => {
+    const [chapter, verse] = verseKey.split('-');
+    const verseElement = document.getElementById(`verse-${chapter}-${verse}`);
+    if (verseElement) {
+      verseElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const handleKeyDown = (event) => {
     if (!bookContent || selectedVerses.length === 0) return;
 
@@ -93,6 +101,7 @@ export default function RenderBook({
         prev.includes(verseKey) ? prev.filter((v) => v !== verseKey) : [verseKey]
       ));
     }
+    scrollToVerse(verseKey);
   };
 
   const changeActiveChapter = (newChapter) => {
@@ -144,7 +153,7 @@ export default function RenderBook({
       className='h-[92vh] overflow-y-scroll hidden-scrollbar relative px-4 rounded-lg'
       aria-label='Book content container'
     >
-      {searchResults && (<SearchResults themeIsDark={themeIsDark} results={searchResults} searchKey={searchKey} setSelectedBook={setSelectedBook} setSearchResults={setSearchResults} setActiveChapter={changeActiveChapter} />)}
+      {searchResults && (<SearchResults themeIsDark={themeIsDark} results={searchResults} searchKey={searchKey} setSelectedBook={setSelectedBook} setSearchResults={setSearchResults} setActiveChapter={changeActiveChapter} scrollToVerse={scrollToVerse} />)}
       {(!searchResults && bookContent) && (
         Object.entries(bookContent)
           .filter(([chapter]) => visibleChapters.includes(parseInt(chapter, 10)))

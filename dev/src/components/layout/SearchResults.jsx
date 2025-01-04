@@ -9,7 +9,7 @@ import { myStyle } from '../../utils/style';
 
 /* eslint-disable react/prop-types */
 function SearchResults({
-  themeIsDark, results, searchKey, setSelectedBook, setSearchResults, setActiveChapter
+  themeIsDark, results, searchKey, setSelectedBook, setSearchResults, setActiveChapter, scrollToVerse
 }) {
   const highlightText = (text) => {
     if (!searchKey) return text;
@@ -27,6 +27,7 @@ function SearchResults({
     setSearchResults(null);
     setSelectedBook(n.book);
     setTimeout(() => { setActiveChapter(n.chapter); }, 0);
+    setTimeout(() => { scrollToVerse(`${n.chapter}-${n.verse}`); }, 1000);
   };
 
   return (
