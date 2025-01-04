@@ -19,6 +19,7 @@ export default function RenderBook({
   const containerRef = useRef(null);
   const chapterRefs = useRef(new Map());
   const [searchResults, setSearchResults] = useState(null);
+  const [searchKey, setSearchKey] = useState('');
 
   const handleScroll = () => {
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current || {};
@@ -143,7 +144,7 @@ export default function RenderBook({
       className='h-[92vh] overflow-y-scroll hidden-scrollbar relative px-4 rounded-lg'
       aria-label='Book content container'
     >
-      {searchResults && (<SearchResults themeIsDark={themeIsDark} results={searchResults} />)}
+      {searchResults && (<SearchResults themeIsDark={themeIsDark} results={searchResults} searchKey={searchKey} />)}
       {(!searchResults && bookContent) && (
         Object.entries(bookContent)
           .filter(([chapter]) => visibleChapters.includes(parseInt(chapter, 10)))
@@ -197,7 +198,7 @@ export default function RenderBook({
             </div>
           ))
       )}
-      <Menu bookName={bookName} activeChapter={activeChapter} onBookSelect={setSelectedBook} setActiveChapter={changeActiveChapter} setSearchResults={setSearchResults} />
+      <Menu bookName={bookName} activeChapter={activeChapter} onBookSelect={setSelectedBook} setActiveChapter={changeActiveChapter} setSearchResults={setSearchResults} setSearchKey={setSearchKey} />
     </div>
   );
 }

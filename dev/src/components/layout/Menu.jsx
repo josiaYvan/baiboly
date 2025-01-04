@@ -11,7 +11,7 @@ import { myStyle } from '../../utils/style';
 import { getBookNames, getChaptersByBookName, searchVerse } from '../../utils/funtcion';
 
 function Menu({
-  bookName, activeChapter, onBookSelect, setActiveChapter, setSearchResults
+  bookName, activeChapter, onBookSelect, setActiveChapter, setSearchResults, setSearchKey
 }) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [chapter, setChapter] = useState([]);
@@ -83,6 +83,7 @@ function Menu({
       const results = searchVerse(searchTerm);
       setSearchResults(results);
       setMenuTitle(`${results.length} référence${results.length > 1 ? 's' : ''}`);
+      setSearchKey(searchTerm);
       setPopup(false);
     }
   };
