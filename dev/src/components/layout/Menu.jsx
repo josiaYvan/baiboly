@@ -183,7 +183,7 @@ function Menu({
                 </motion.li>
               )) : (
                 <Empty
-                  className='my-10'
+                  className='my-5'
                   description={(<span>Aucun résultat ...</span>)}
                 />
               )}
