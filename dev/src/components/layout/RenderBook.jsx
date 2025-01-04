@@ -93,16 +93,33 @@ export default function RenderBook({
 
   const changeActiveChapter = (newChapter) => {
     const chapterNumber = Number(newChapter);
-    if (chapterNumber >= 1 && chapterNumber <= Object.keys(bookContent).length) {
-      const newVisibleChapters = [];
-      if (chapterNumber - 2 > 0) newVisibleChapters.push(chapterNumber - 2);
-      if (chapterNumber - 1 > 0) newVisibleChapters.push(chapterNumber - 1);
-      newVisibleChapters.push(chapterNumber);
-      if (chapterNumber + 1 <= Object.keys(bookContent).length) newVisibleChapters.push(chapterNumber + 1);
-      if (chapterNumber + 2 <= Object.keys(bookContent).length) newVisibleChapters.push(chapterNumber + 2);
-      console.log('line:108 newVisibleChapters\n---> ', newVisibleChapters);
+    const totalChapters = Object.keys(bookContent).length;
+
+    if (chapterNumber >= 1 && chapterNumber <= totalChapters) {
+      let newVisibleChapters = [];
+      if (chapterNumber <= 3) {
+        newVisibleChapters = [1, 2, 3, 4, 5];
+      } else if (chapterNumber >= totalChapters - 2) {
+        newVisibleChapters = Array.from(
+          { length: 5 },
+          (_, i) => totalChapters - 4 + i
+        );
+      } else {
+        newVisibleChapters = Array.from(
+          { length: 5 },
+          (_, i) => chapterNumber - 2 + i
+        );
+      }
+
       setVisibleChapters(newVisibleChapters);
-      setActiveChapter(chapterNumber);
+
+      // Défilement fluide vers le chapitre sélectionné
+      setTimeout(() => {
+        const chapterElement = chapterRefs.current.get(String(chapterNumber));
+        if (chapterElement) {
+          chapterElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 0);
     }
   };
 
