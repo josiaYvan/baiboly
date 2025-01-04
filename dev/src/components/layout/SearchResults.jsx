@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/prop-types */
 import React from 'react';
@@ -5,7 +7,10 @@ import { Empty } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { myStyle } from '../../utils/style';
 
-function SearchResults({ themeIsDark, results, searchKey }) {
+/* eslint-disable react/prop-types */
+function SearchResults({
+  themeIsDark, results, searchKey, setSelectedBook, setSearchResults
+}) {
   const highlightText = (text) => {
     if (!searchKey) return text;
 
@@ -15,6 +20,11 @@ function SearchResults({ themeIsDark, results, searchKey }) {
     ) : (
       part
     )));
+  };
+
+  const selectVerse = (n) => {
+    setSearchResults(null);
+    setSelectedBook(n.book);
   };
 
   return (
@@ -37,6 +47,7 @@ function SearchResults({ themeIsDark, results, searchKey }) {
                   key={index}
                   title={`${item.book} ${item.chapter}:${item.verse}`}
                   className={`${themeIsDark ? 'hover:bg-gray-100' : 'hover:bg-gray-900'} !bg-opacity-5 p-4 border-gray-300 rounded-md`}
+                  onClick={() => selectVerse(item)}
                 >
                   <p>
                     {highlightText(item.text)}
