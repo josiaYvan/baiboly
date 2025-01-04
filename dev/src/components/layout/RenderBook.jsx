@@ -176,6 +176,7 @@ export default function RenderBook({
                     trigger='contextMenu'
                   >
                     <p
+                      id={`verse-${chapter}-${verse}`}
                       className={`mt-1 px-2 rounded text-lg lora leading-8 cursor-pointer !bg-opacity-5 transition-all ${
                         selectedVerses.includes(verseKey) ? 'bg-yellow-300' : themeIsDark ? 'hover:bg-gray-100' : 'hover:bg-gray-900'
                       }`}
