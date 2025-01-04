@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
@@ -6,6 +7,7 @@ import { Tooltip } from 'antd';
 import { myStyle } from '../../utils/style';
 import PaletteColor from './PaletteColor';
 import Menu from './Menu';
+import SearchResults from './SearchResults';
 
 export default function RenderBook({
   bookContent, bookName, themeIsDark, setSelectedBook
@@ -16,6 +18,7 @@ export default function RenderBook({
   const [activeChapter, setActiveChapter] = useState(1);
   const containerRef = useRef(null);
   const chapterRefs = useRef(new Map());
+  const [searchResults, setSearchResults] = useState(null);
 
   const handleScroll = () => {
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current || {};
@@ -140,7 +143,8 @@ export default function RenderBook({
       className='h-[92vh] overflow-y-scroll hidden-scrollbar relative px-4 rounded-lg'
       aria-label='Book content container'
     >
-      {bookContent ? (
+      {searchResults && (<SearchResults themeIsDark={themeIsDark} results={searchResults} />)}
+      {(!searchResults && bookContent) && (
         Object.entries(bookContent)
           .filter(([chapter]) => visibleChapters.includes(parseInt(chapter, 10)))
           .map(([chapter, verses]) => (
@@ -192,10 +196,8 @@ export default function RenderBook({
               })}
             </div>
           ))
-      ) : (
-        <p className='italic text-gray-500 text-center'>Aucun contenu disponible pour ce livre.</p>
       )}
-      <Menu bookName={bookName} activeChapter={activeChapter} onBookSelect={setSelectedBook} setActiveChapter={changeActiveChapter} />
+      <Menu bookName={bookName} activeChapter={activeChapter} onBookSelect={setSelectedBook} setActiveChapter={changeActiveChapter} setSearchResults={setSearchResults} />
     </div>
   );
 }

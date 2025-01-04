@@ -3,19 +3,21 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable import/no-extraneous-dependencies */
-import { Empty, Input } from 'antd';
+import { Empty, Input, Tooltip } from 'antd';
 import { motion } from 'framer-motion';
 import React, { useState, useRef, useEffect } from 'react';
+import { SearchOutlined } from '@ant-design/icons';
 import { myStyle } from '../../utils/style';
-import { getBookNames, getChaptersByBookName } from '../../utils/funtcion';
+import { getBookNames, getChaptersByBookName, searchVerse } from '../../utils/funtcion';
 
 function Menu({
-  bookName, activeChapter, onBookSelect, setActiveChapter
+  bookName, activeChapter, onBookSelect, setActiveChapter, setSearchResults
 }) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [chapter, setChapter] = useState([]);
   const [popup, setPopup] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [menuTitle, setMenuTitle] = useState(bookName);
   const [filteredBooks, setFilteredBooks] = useState(getBookNames());
   const bookNames = getBookNames();
   const menuRef = useRef(null);
@@ -36,7 +38,12 @@ function Menu({
     visible: { opacity: 1, y: 0 }
   };
 
+  useEffect(() => {
+    setMenuTitle(bookName);
+  }, [bookName]);
+
   const handleSelect = (book) => {
+    setSearchResults(null);
     if (selectedBook === book) {
       setSelectedBook(null); // Désélectionner le livre si déjà sélectionné
       setChapter([]); // Effacer les chapitres
@@ -71,12 +78,29 @@ function Menu({
     }
   };
 
+  const handleConcordanse = () => {
+    if (searchTerm) {
+      const results = searchVerse(searchTerm);
+      setSearchResults(results);
+      setMenuTitle(`${results.length} référence${results.length > 1 ? 's' : ''}`);
+      setPopup(false);
+    }
+  };
+
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === 'Enter') handleConcordanse();
+    };
+    window.addEventListener('keydown', handleKeyPress);
+    return () => { window.removeEventListener('keydown', handleKeyPress); };
+  }, [searchTerm]);
 
   return (
     <div ref={menuRef} className='z-20 fixed bottom-8 left-1/2 transform -translate-x-1/2 w-72'>
@@ -97,7 +121,7 @@ function Menu({
           aria-expanded={selectedBook ? 'true' : 'false'}
           aria-label='Select Book'
         >
-          {bookName ? `${bookName}  ${activeChapter}` : 'Select Book'}
+          {menuTitle ? `${menuTitle}${!menuTitle.includes('référence') && activeChapter ? ` ${activeChapter}` : ''}` : 'Select Book'}
         </motion.button>
 
         {popup && (
@@ -114,8 +138,10 @@ function Menu({
                 type='text'
                 value={searchTerm}
                 onChange={handleSearch}
-                placeholder='Rechercher un livre...'
+                placeholder='Rechercher ici...'
                 allowClear
+                variant='filled'
+                suffix={<Tooltip title='Chercher dans la concordance'><SearchOutlined onClick={handleConcordanse} /></Tooltip>}
                 className='w-full p-2 border rounded-lg focus:outline-none focus:ring focus:ring-yellow-300'
               />
             </div>
@@ -157,9 +183,15 @@ function Menu({
               )) : (
                 <Empty
                   className='my-10'
-                  description={<span>Chercher dans la concordanse...</span>}
+                  description={(<span>Aucun résultat ...</span>)}
                 />
               )}
+              <button
+                onClick={handleConcordanse}
+                className='m-4 px-4 py-2 text-sm bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600 transition-all duration-200'
+              >
+                Chercher dans la concordance
+              </button>
             </motion.ul>
           </motion.div>
         )}
