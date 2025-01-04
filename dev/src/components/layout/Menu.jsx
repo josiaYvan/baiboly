@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable import/no-extraneous-dependencies */
-import { Input } from 'antd';
+import { Empty, Input } from 'antd';
 import { motion } from 'framer-motion';
 import React, { useState, useRef, useEffect } from 'react';
 import { myStyle } from '../../utils/style';
@@ -121,7 +121,7 @@ function Menu({
             </div>
 
             <motion.ul>
-              {filteredBooks.map((book) => (
+              {filteredBooks.length > 0 ? filteredBooks.map((book) => (
                 <motion.li
                   key={book}
                   className='px-2 text-gray-800'
@@ -154,7 +154,12 @@ function Menu({
                     )}
                   </div>
                 </motion.li>
-              ))}
+              )) : (
+                <Empty
+                  className='my-10'
+                  description={<span>Chercher dans la concordanse...</span>}
+                />
+              )}
             </motion.ul>
           </motion.div>
         )}
