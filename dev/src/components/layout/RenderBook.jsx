@@ -16,6 +16,7 @@ export default function RenderBook({
   const [selectedVerses, setSelectedVerses] = useState([]);
   const [backgroundColor, setBackgroundColor] = useState(myStyle.yellowGround);
   const [activeChapter, setActiveChapter] = useState(1);
+  const [activeVerse, setActiveVerse] = useState(null);
   const containerRef = useRef(null);
   const chapterRefs = useRef(new Map());
   const [searchResults, setSearchResults] = useState(null);
@@ -48,6 +49,7 @@ export default function RenderBook({
       }
     }
     if (active !== activeChapter) {
+      setActiveVerse(active);
       setActiveChapter(active);
     }
   };
@@ -83,9 +85,11 @@ export default function RenderBook({
         setSelectedVerses([previousVerse]);
       }
     }
+    // scrollToVerse(verseKey);
   };
 
   const handleVerseClick = (verseKey, event) => {
+    setActiveVerse(null);
     if (event.shiftKey && selectedVerses.length > 0) {
       const allVerses = visibleChapters.flatMap((chapter) => Object.keys(bookContent[chapter] || {}).map((verse) => `${chapter}-${verse}`));
 
@@ -101,7 +105,6 @@ export default function RenderBook({
         prev.includes(verseKey) ? prev.filter((v) => v !== verseKey) : [verseKey]
       ));
     }
-    scrollToVerse(verseKey);
   };
 
   const changeActiveChapter = (newChapter) => {
@@ -188,7 +191,7 @@ export default function RenderBook({
                       id={`verse-${chapter}-${verse}`}
                       className={`mt-1 px-2 rounded text-lg lora leading-8 cursor-pointer !bg-opacity-5 transition-all ${
                         selectedVerses.includes(verseKey) ? 'bg-yellow-300' : themeIsDark ? 'hover:bg-gray-100' : 'hover:bg-gray-900'
-                      }`}
+                      } ${activeVerse && (verseKey === activeVerse ? 'text-blue-500' : 'text-gray-400')}`}
                       style={{
                         backgroundColor: selectedVerses.includes(verseKey) && backgroundColor
                       }}

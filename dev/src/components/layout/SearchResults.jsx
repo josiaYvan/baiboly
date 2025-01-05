@@ -26,7 +26,7 @@ function SearchResults({
     console.log('line:26 n\n---> ', n);
     setSearchResults(null);
     setSelectedBook(n.book);
-    setTimeout(() => { setActiveChapter(n.chapter); }, 0);
+    setTimeout(() => { setActiveChapter(n.chapter); }, 30);
     setTimeout(() => { scrollToVerse(`${n.chapter}-${n.verse}`); }, 1000);
   };
 
@@ -36,7 +36,7 @@ function SearchResults({
         backgroundColor: themeIsDark ? myStyle.bg : myStyle.light,
         color: themeIsDark ? myStyle.darkColor : myStyle.brown
       }}
-      className='transition duration-500 ease-in-out'
+      className='transition duration-500 ease-in-out pb-20'
     >
       <div>
         <h1 className='text-center font-semibold my-2'>
