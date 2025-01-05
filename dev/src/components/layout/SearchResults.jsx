@@ -2,33 +2,32 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Empty } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { myStyle } from '../../utils/style';
 
-/* eslint-disable react/prop-types */
 function SearchResults({
   themeIsDark, results, searchKey, setSelectedBook, setSearchResults, setActiveChapter, scrollToVerse
 }) {
   const highlightText = (text) => {
     if (!searchKey) return text;
-
     const parts = text.split(new RegExp(`(${searchKey})`, 'gi'));
-    return parts.map((part, index) => (part.toLowerCase() === searchKey.toLowerCase() ? (
-      <strong className='text-blue-500' key={index}>{part}</strong>
-    ) : (
-      part
-    )));
+    return parts.map((part, index) => (
+      part.toLowerCase() === searchKey.toLowerCase() ?
+        <strong className='text-blue-500' key={index}>{part}</strong> :
+        part
+    ));
   };
 
-  const selectVerse = (n) => {
-    console.log('line:26 n\n---> ', n);
+  const selectVerse = useCallback((n) => {
     setSearchResults(null);
     setSelectedBook(n.book);
-    setTimeout(() => { setActiveChapter(n.chapter); }, 30);
-    setTimeout(() => { scrollToVerse(`${n.chapter}-${n.verse}`); }, 1000);
-  };
+    setActiveChapter(n.chapter);
+    setTimeout(() => {
+      scrollToVerse(`${n.chapter}-${n.verse}`);
+    }, 1000);
+  }, [setSearchResults, setSelectedBook, setActiveChapter, scrollToVerse]);
 
   return (
     <div
@@ -39,9 +38,7 @@ function SearchResults({
       className='transition duration-500 ease-in-out pb-20'
     >
       <div>
-        <h1 className='text-center font-semibold my-2'>
-          Résultats de recherche
-        </h1>
+        <h1 className='text-center font-semibold my-2'>Résultats de recherche</h1>
         <div className='rounded text-lg lora leading-8'>
           {results.length > 0 ? (
             <div className='grid grid-cols-1'>
@@ -52,9 +49,7 @@ function SearchResults({
                   className={`${themeIsDark ? 'hover:bg-gray-100' : 'hover:bg-gray-900'} !bg-opacity-5 p-4 border-gray-300 rounded-md`}
                   onClick={() => selectVerse(item)}
                 >
-                  <p>
-                    {highlightText(item.text)}
-                  </p>
+                  <p>{highlightText(item.text)}</p>
                   <p className='poppins-semibold text-gray-500 text-sm w-full py-3 cursor-pointer rounded'>
                     {item.book}
                     {' '}
