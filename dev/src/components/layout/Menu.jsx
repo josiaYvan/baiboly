@@ -13,7 +13,7 @@ import { myStyle } from '../../utils/style';
 import { getBookNames, getChaptersByBookName, searchVerse } from '../../utils/funtcion';
 
 function Menu({
-  bookName, activeChapter, onBookSelect, setActiveChapter, setSearchResults, setSearchKey
+  bookName, activeChapter, onBookSelect, setActiveChapter, setSearchResults, setSearchKey, setActiveVerse
 }) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [chapter, setChapter] = useState([]);
@@ -44,6 +44,7 @@ function Menu({
   }, [bookName]);
 
   const handleSelect = useCallback((book) => {
+    setActiveVerse(null);
     setSearchResults(null);
     if (selectedBook === book) {
       setSelectedBook(null);
@@ -74,6 +75,7 @@ function Menu({
   };
 
   const handleConcordanse = useCallback(() => {
+    setActiveVerse(null);
     if (searchTerm) {
       const results = searchVerse(searchTerm);
       setSearchResults(results);
@@ -154,11 +156,11 @@ function Menu({
                       {book}
                     </div>
                     {selectedBook === book && chapter.length > 0 && (
-                      <div className='grid grid-cols-5 gap-2 mt-2 px-2'>
+                      <div className='grid grid-cols-5 gap-2 mt-2 px-4'>
                         {chapter.map((n) => (
                           <button
                             key={n}
-                            className={`w-full h-8 rounded-lg border flex justify-center items-center cursor-pointer hover:bg-gray-100 ${activeChapter === n ? 'bg-yellow-200' : ''}`}
+                            className={`w-full h-10 rounded-lg border flex justify-center items-center cursor-pointer hover:bg-gray-100 ${activeChapter === n ? 'bg-yellow-200' : ''}`}
                             onClick={() => handleSetActiveChapter(n)}
                           >
                             {n}

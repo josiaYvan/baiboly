@@ -172,6 +172,12 @@ code {
   font-style: normal;
   font-weight: 400;
 }
+.lora-semibold {
+  font-family: "Lora", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-weight: 600;
+}
 .lora-bold {
   font-family: "Lora", serif;
   font-optical-sizing: auto;

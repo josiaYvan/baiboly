@@ -16,7 +16,7 @@ export default function RenderBook({
 }) {
   const [visibleChapters, setVisibleChapters] = useState([1, 2, 3, 4, 5]);
   const [selectedVerses, setSelectedVerses] = useState([]);
-  const [backgroundColor, setBackgroundColor] = useState(myStyle.yellowGround);
+  const [backgroundColor, setBackgroundColor] = useState(myStyle.blueGround);
   const [activeChapter, setActiveChapter] = useState(1);
   const [activeVerse, setActiveVerse] = useState(null);
   const containerRef = useRef(null);
@@ -49,14 +49,14 @@ export default function RenderBook({
     const active = Array.from(chapterRefs.current.entries()).reduce((acc, [chapter, ref]) => (ref && ref.offsetTop <= scrollTop + clientHeight / 2 ? parseInt(chapter, 10) : acc), activeChapter);
 
     if (active !== activeChapter) {
-      setActiveVerse(active);
       setActiveChapter(active);
     }
   }, [bookContent, activeChapter]);
 
   const scrollToVerse = useCallback((verseKey) => {
+    setActiveVerse(verseKey);
     const [chapter, verse] = verseKey.split('-');
-    const verseElement = document.getElementById(`verse-${chapter}-${verse}`);
+    const verseElement = document.getElementById(`verse-${chapter}-${verse - 1}`);
     if (verseElement) {
       verseElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -77,6 +77,7 @@ export default function RenderBook({
       const previousVerse = allVerses[currentIndex - 1];
       setSelectedVerses(event.shiftKey ? [...selectedVerses, previousVerse] : [previousVerse]);
     }
+    // scrollToVerse(`${activeChapter}-${currentIndex}`);
   }, [bookContent, selectedVerses, visibleChapters]);
 
   const handleVerseClick = useCallback((verseKey, event) => {
@@ -130,7 +131,7 @@ export default function RenderBook({
   return (
     <div
       ref={containerRef}
-      className='h-[92vh] overflow-y-scroll hidden-scrollbar relative px-4 rounded-lg'
+      className='h-[93vh] overflow-y-scroll hidden-scrollbar relative px-4 rounded-lg'
       aria-label='Book content container'
     >
       {searchResults && (
@@ -175,16 +176,15 @@ export default function RenderBook({
                 >
                   <p
                     id={`verse-${chapter}-${verse}`}
-                    className={`mt-1 px-2 rounded text-lg lora leading-8 cursor-pointer !bg-opacity-5 transition-all ${
+                    className={`relative mt-1 px-2 rounded text-lg lora leading-8 cursor-pointer !bg-opacity-5 transition-all ${
                       selectedVerses.includes(verseKey) ? 'bg-yellow-300' : themeIsDark ? 'hover:bg-gray-100' : 'hover:bg-gray-900'
-                    } ${activeVerse && (verseKey === activeVerse ? 'text-blue-500' : 'text-gray-400')}`}
-                    style={{ backgroundColor: selectedVerses.includes(verseKey) && backgroundColor }}
+                    } ${activeVerse && (verseKey === activeVerse ? 'lora-semibold' : '')}`}
+                    style={{ backgroundColor: selectedVerses.includes(verseKey) && backgroundColor, color: activeVerse && (verseKey === activeVerse ? myStyle.blue : myStyle.hide) }}
                     onClick={(event) => handleVerseClick(verseKey, event)}
                   >
                     <b>
-                      {verse}
+                      <sup className='relative text-xs -top-1'>{verse}</sup>
                       {' '}
-                      ·
                     </b>
                     {text}
                   </p>
@@ -200,6 +200,7 @@ export default function RenderBook({
         setActiveChapter={changeActiveChapter}
         setSearchResults={setSearchResults}
         setSearchKey={setSearchKey}
+        setActiveVerse={setActiveVerse}
       />
     </div>
   );

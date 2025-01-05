@@ -63,7 +63,7 @@ function SearchResults({
             </div>
           ) : (
             <div className='flex justify-center items-center h-64'>
-              <Empty description='Aucun résultat trouvé' />
+              <Empty description={<span className='text-gray-500'>Aucun résultat trouvé</span>} />
             </div>
           )}
         </div>
