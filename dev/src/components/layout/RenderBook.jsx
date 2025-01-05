@@ -16,6 +16,7 @@ export default function RenderBook({
 }) {
   const [visibleChapters, setVisibleChapters] = useState([1, 2, 3, 4, 5]);
   const [selectedVerses, setSelectedVerses] = useState([]);
+  const [selectedVerse, setSelectedVerse] = useState(1);
   const [backgroundColor, setBackgroundColor] = useState(myStyle.blueGround);
   const [activeChapter, setActiveChapter] = useState(1);
   const [activeVerse, setActiveVerse] = useState(null);
@@ -54,7 +55,7 @@ export default function RenderBook({
   }, [bookContent, activeChapter]);
 
   const scrollToVerse = useCallback((verseKey) => {
-    setActiveVerse(verseKey);
+    setSelectedVerse(verseKey);
     const [chapter, verse] = verseKey.split('-');
     const verseElement = document.getElementById(`verse-${chapter}-${verse - 1}`);
     if (verseElement) {
@@ -73,15 +74,27 @@ export default function RenderBook({
     if (event.key === 'ArrowDown' && currentIndex < allVerses.length - 1) {
       const nextVerse = allVerses[currentIndex + 1];
       setSelectedVerses(event.shiftKey ? [...selectedVerses, nextVerse] : [nextVerse]);
+      setTimeout(() => {
+        // setActiveVerse(nextVerse);
+        scrollToVerse(nextVerse);
+      }, 0);
+      console.log('line:78 nextVerse\n---> ', nextVerse);
     } else if (event.key === 'ArrowUp' && currentIndex > 0) {
       const previousVerse = allVerses[currentIndex - 1];
       setSelectedVerses(event.shiftKey ? [...selectedVerses, previousVerse] : [previousVerse]);
+      setTimeout(() => {
+        // setActiveVerse(previousVerse);
+        scrollToVerse(previousVerse);
+      }, 0);
+      console.log('line:83 previousVerse\n---> ', previousVerse);
     }
-    // scrollToVerse(`${activeChapter}-${currentIndex}`);
   }, [bookContent, selectedVerses, visibleChapters]);
 
   const handleVerseClick = useCallback((verseKey, event) => {
     setActiveVerse(null);
+    if (selectedVerse) setSelectedVerse(null);
+    else setSelectedVerse(verseKey);
+    // scrollToVerse(verseKey);
     if (event.shiftKey && selectedVerses.length > 0) {
       const allVerses = visibleChapters.flatMap((chapter) => Object.keys(bookContent[chapter] || {}).map((verse) => `${chapter}-${verse}`));
       const start = allVerses.indexOf(selectedVerses[0]);
@@ -95,7 +108,7 @@ export default function RenderBook({
         prev.includes(verseKey) ? prev.filter((v) => v !== verseKey) : [verseKey]
       ));
     }
-  }, [visibleChapters, selectedVerses, bookContent]);
+  }, [visibleChapters, selectedVerses, bookContent, selectedVerse]);
 
   const changeActiveChapter = useCallback((newChapter) => {
     const chapterNumber = Number(newChapter);
@@ -143,6 +156,7 @@ export default function RenderBook({
           setSearchResults={setSearchResults}
           setActiveChapter={changeActiveChapter}
           scrollToVerse={scrollToVerse}
+          setActiveVerse={setActiveVerse}
         />
       )}
       {!searchResults && bookContent && Object.entries(bookContent)
@@ -179,7 +193,7 @@ export default function RenderBook({
                     className={`relative mt-1 px-2 rounded text-lg lora leading-8 cursor-pointer !bg-opacity-5 transition-all ${
                       selectedVerses.includes(verseKey) ? 'bg-yellow-300' : themeIsDark ? 'hover:bg-gray-100' : 'hover:bg-gray-900'
                     } ${activeVerse && (verseKey === activeVerse ? 'lora-semibold' : '')}`}
-                    style={{ backgroundColor: selectedVerses.includes(verseKey) && backgroundColor, color: activeVerse && (verseKey === activeVerse ? myStyle.blue : myStyle.hide) }}
+                    style={{ backgroundColor: selectedVerses.includes(verseKey) && backgroundColor, color: activeVerse ? (verseKey === activeVerse ? myStyle.blue : myStyle.hide) : (selectedVerse && (verseKey === selectedVerse ? themeIsDark ? myStyle.darkColor : myStyle.brown : myStyle.hide)) }}
                     onClick={(event) => handleVerseClick(verseKey, event)}
                   >
                     <b>

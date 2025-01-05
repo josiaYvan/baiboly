@@ -21,5 +21,6 @@ export const myStyle = {
   redGround: 'rgba(184, 95, 101, 0.2)',
   brunGround: 'rgba(247, 230, 167, 0.2)',
   hide: 'rgba(122, 122, 122, 0.45)',
-  greenGround: 'rgba(0, 227, 136, 0.2)'
+  greenGround: 'rgba(0, 227, 136, 0.2)',
+  nonGround: 'rgba(0, 227, 136, 0)'
 };

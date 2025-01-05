@@ -8,7 +8,7 @@ import { RightOutlined } from '@ant-design/icons';
 import { myStyle } from '../../utils/style';
 
 function SearchResults({
-  themeIsDark, results, searchKey, setSelectedBook, setSearchResults, setActiveChapter, scrollToVerse
+  themeIsDark, results, searchKey, setSelectedBook, setSearchResults, setActiveChapter, scrollToVerse, setActiveVerse
 }) {
   const highlightText = (text) => {
     if (!searchKey) return text;
@@ -21,10 +21,12 @@ function SearchResults({
   };
 
   const selectVerse = useCallback((n) => {
+    const verseKey = `${n.chapter}-${n.verse}`;
+    setActiveVerse(verseKey);
     setSearchResults(null);
     setSelectedBook(n.book);
     setTimeout(() => { setActiveChapter(n.chapter); }, 30);
-    setTimeout(() => { scrollToVerse(`${n.chapter}-${n.verse}`); }, 1000);
+    setTimeout(() => { scrollToVerse(verseKey); }, 1000);
   }, [setSearchResults, setSelectedBook, setActiveChapter, scrollToVerse]);
 
   return (

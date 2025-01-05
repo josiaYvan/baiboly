@@ -27,6 +27,7 @@ function PaletteColor({ setBackgroundColor, selectedText }) {
       <div className='w-5 h-5 rounded-[50%]' onClick={() => setBackgroundColor(myStyle.brunGround)} style={{ backgroundColor: myStyle.brun }} />
       <div className='w-5 h-5 rounded-[50%]' onClick={() => setBackgroundColor(myStyle.greenGround)} style={{ backgroundColor: myStyle.green }} />
       <div className='w-5 h-5 rounded-[50%]' onClick={() => setBackgroundColor(myStyle.blueGround)} style={{ backgroundColor: myStyle.blue }} />
+      <div className='w-5 h-5 rounded-[50%] border' onClick={() => setBackgroundColor(myStyle.nonGround)} style={{ backgroundColor: myStyle.nonGround }} />
       <Tooltip title={isCopied ? 'Copié' : 'Copier'}>
         <div onClick={handleCopy} className='w-5 h-5 p-1 flex justify-center items-center text-gray-300 bg-gray-300 bg-opacity-20 rounded-[50%] cursor-pointer'>
           {isCopied ? <CheckOutlined /> : <CopyOutlined />}
