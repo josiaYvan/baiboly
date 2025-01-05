@@ -5,7 +5,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { Empty, Input, Tooltip } from 'antd';
 import { motion } from 'framer-motion';
-import React, { useState, useRef, useEffect } from 'react';
+import React, {
+  useState, useRef, useEffect, useCallback, useMemo
+} from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import { myStyle } from '../../utils/style';
 import { getBookNames, getChaptersByBookName, searchVerse } from '../../utils/funtcion';
@@ -18,9 +20,8 @@ function Menu({
   const [popup, setPopup] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [menuTitle, setMenuTitle] = useState(bookName);
-  const [filteredBooks, setFilteredBooks] = useState(getBookNames());
-  const bookNames = getBookNames();
   const menuRef = useRef(null);
+  const bookNames = useMemo(() => getBookNames(), []);
 
   const textVariants = {
     initial: { scale: 1 },
@@ -42,43 +43,37 @@ function Menu({
     setMenuTitle(bookName);
   }, [bookName]);
 
-  const handleSelect = (book) => {
+  const handleSelect = useCallback((book) => {
     setSearchResults(null);
     if (selectedBook === book) {
-      setSelectedBook(null); // Désélectionner le livre si déjà sélectionné
-      setChapter([]); // Effacer les chapitres
+      setSelectedBook(null);
+      setChapter([]);
     } else {
-      setSelectedBook(book); // Sélectionner un nouveau livre
-      onBookSelect(book); // Décommenter si nécessaire
-      setChapter(getChaptersByBookName(book)); // Récupérer les chapitres du livre sélectionné
+      setSelectedBook(book);
+      onBookSelect(book);
+      setChapter(getChaptersByBookName(book));
     }
-  };
+  }, [selectedBook, onBookSelect, setSearchResults]);
 
-  const handleSetActiveChapter = (n) => {
+  const handleSetActiveChapter = useCallback((n) => {
     setActiveChapter(n);
     setPopup(false);
-  };
-
-  const handleBook = () => {
-    setSelectedBook(null);
-    setPopup(true);
-  };
+  }, [setActiveChapter]);
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
     setSearchTerm(value);
-    setFilteredBooks(
-      bookNames.filter((book) => book.toLowerCase().includes(value))
-    );
   };
+
+  const filteredBooks = useMemo(() => bookNames.filter((book) => book.toLowerCase().includes(searchTerm)), [bookNames, searchTerm]);
 
   const handleClickOutside = (event) => {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
-      setPopup(false); // Fermer le menu si le clic est à l'extérieur
+      setPopup(false);
     }
   };
 
-  const handleConcordanse = () => {
+  const handleConcordanse = useCallback(() => {
     if (searchTerm) {
       const results = searchVerse(searchTerm);
       setSearchResults(results);
@@ -86,7 +81,7 @@ function Menu({
       setSearchKey(searchTerm);
       setPopup(false);
     }
-  };
+  }, [searchTerm, setSearchResults, setMenuTitle, setSearchKey]);
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -100,8 +95,10 @@ function Menu({
       if (event.key === 'Enter') handleConcordanse();
     };
     window.addEventListener('keydown', handleKeyPress);
-    return () => { window.removeEventListener('keydown', handleKeyPress); };
-  }, [searchTerm]);
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [handleConcordanse]);
 
   return (
     <div ref={menuRef} className='z-20 fixed bottom-8 left-1/2 transform -translate-x-1/2 w-72'>
@@ -113,7 +110,7 @@ function Menu({
         transition={{ duration: 0.5 }}
       >
         <motion.button
-          onClick={handleBook}
+          onClick={() => setPopup(true)}
           variants={textVariants}
           whileHover='hover'
           whileTap='tap'
@@ -133,7 +130,6 @@ function Menu({
             exit='hidden'
             variants={containerVariants}
           >
-            {/* Barre de recherche */}
             <div className='p-2 sticky top-0 bg-white z-10'>
               <Input
                 type='text'
@@ -149,29 +145,20 @@ function Menu({
 
             <motion.ul>
               {filteredBooks.length > 0 ? filteredBooks.map((book) => (
-                <motion.li
-                  key={book}
-                  className='px-2 text-gray-800'
-                  variants={itemVariants}
-                >
+                <motion.li key={book} className='px-2 text-gray-800' variants={itemVariants}>
                   <div>
                     <div
                       onClick={() => handleSelect(book)}
-                      className={`hover:bg-gray-100 cursor-pointer p-2 rounded-lg ${
-                        selectedBook === book ? 'font-semibold' : ''
-                      }`}
+                      className={`hover:bg-gray-100 cursor-pointer p-2 rounded-lg ${selectedBook === book ? 'font-semibold' : ''}`}
                     >
                       {book}
                     </div>
-                    {/* Affichage des chapitres uniquement si le livre est sélectionné */}
                     {selectedBook === book && chapter.length > 0 && (
                       <div className='grid grid-cols-5 gap-2 mt-2 px-2'>
                         {chapter.map((n) => (
                           <button
                             key={n}
-                            className={`w-full h-8 rounded-lg border flex justify-center items-center cursor-pointer hover:bg-gray-100 ${
-                              activeChapter === n ? 'bg-yellow-200' : ''
-                            }`}
+                            className={`w-full h-8 rounded-lg border flex justify-center items-center cursor-pointer hover:bg-gray-100 ${activeChapter === n ? 'bg-yellow-200' : ''}`}
                             onClick={() => handleSetActiveChapter(n)}
                           >
                             {n}
@@ -182,10 +169,7 @@ function Menu({
                   </div>
                 </motion.li>
               )) : (
-                <Empty
-                  className='my-5'
-                  description={(<span>Aucun résultat ...</span>)}
-                />
+                <Empty className='my-5' description={<span>Aucun résultat ...</span>} />
               )}
               <button
                 onClick={handleConcordanse}
