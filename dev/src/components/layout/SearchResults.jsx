@@ -23,10 +23,8 @@ function SearchResults({
   const selectVerse = useCallback((n) => {
     setSearchResults(null);
     setSelectedBook(n.book);
-    setActiveChapter(n.chapter);
-    setTimeout(() => {
-      scrollToVerse(`${n.chapter}-${n.verse}`);
-    }, 1000);
+    setTimeout(() => { setActiveChapter(n.chapter); }, 30);
+    setTimeout(() => { scrollToVerse(`${n.chapter}-${n.verse}`); }, 1000);
   }, [setSearchResults, setSelectedBook, setActiveChapter, scrollToVerse]);
 
   return (
