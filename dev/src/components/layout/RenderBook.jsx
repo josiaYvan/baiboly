@@ -16,7 +16,7 @@ export default function RenderBook({
 }) {
   const [visibleChapters, setVisibleChapters] = useState([1, 2, 3, 4, 5]);
   const [selectedVerses, setSelectedVerses] = useState([]);
-  const [selectedVerse, setSelectedVerse] = useState(1);
+  const [selectedVerse, setSelectedVerse] = useState(null);
   const [backgroundColor, setBackgroundColor] = useState(myStyle.blueGround);
   const [activeChapter, setActiveChapter] = useState(1);
   const [activeVerse, setActiveVerse] = useState(null);
@@ -75,7 +75,6 @@ export default function RenderBook({
       const nextVerse = allVerses[currentIndex + 1];
       setSelectedVerses(event.shiftKey ? [...selectedVerses, nextVerse] : [nextVerse]);
       setTimeout(() => {
-        // setActiveVerse(nextVerse);
         scrollToVerse(nextVerse);
       }, 0);
       console.log('line:78 nextVerse\n---> ', nextVerse);
@@ -83,18 +82,14 @@ export default function RenderBook({
       const previousVerse = allVerses[currentIndex - 1];
       setSelectedVerses(event.shiftKey ? [...selectedVerses, previousVerse] : [previousVerse]);
       setTimeout(() => {
-        // setActiveVerse(previousVerse);
         scrollToVerse(previousVerse);
       }, 0);
-      console.log('line:83 previousVerse\n---> ', previousVerse);
     }
   }, [bookContent, selectedVerses, visibleChapters]);
 
   const handleVerseClick = useCallback((verseKey, event) => {
     setActiveVerse(null);
     if (selectedVerse) setSelectedVerse(null);
-    else setSelectedVerse(verseKey);
-    // scrollToVerse(verseKey);
     if (event.shiftKey && selectedVerses.length > 0) {
       const allVerses = visibleChapters.flatMap((chapter) => Object.keys(bookContent[chapter] || {}).map((verse) => `${chapter}-${verse}`));
       const start = allVerses.indexOf(selectedVerses[0]);
