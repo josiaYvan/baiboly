@@ -54,26 +54,20 @@ export default function RenderBook({
     }
   }, [bookContent, activeChapter]);
 
-  const scrollToVerse = useCallback((verseKey) => {
+  const scrollToVerse = useCallback((verseKey, isDown = false) => {
     setSelectedVerse(verseKey);
     const [chapter, verse] = verseKey.split('-');
     const verseElement = document.getElementById(`verse-${chapter}-${verse}`);
 
     if (verseElement) {
-      const { top: verseTop, height: verseHeight } = verseElement.getBoundingClientRect();
+      const { top: verseTop } = verseElement.getBoundingClientRect();
       const container = containerRef.current;
 
       if (container) {
-        const { top: containerTop, height: containerHeight } = container.getBoundingClientRect();
-
-        // Positionner le verset au centre ou légèrement au-dessus
-        const targetScrollTop = verseTop + container.scrollTop - containerTop - (containerHeight / 2) + (verseHeight / 2);
-
-        // Effectuer le défilement en douceur
-        container.scrollTo({
-          top: targetScrollTop,
-          behavior: 'smooth'
-        });
+        const { top: containerTop } = container.getBoundingClientRect();
+        const offsetFromTop = isDown ? 132 : 50;
+        const targetScrollTop = verseTop + container.scrollTop - containerTop - offsetFromTop;
+        container.scrollTo({ top: targetScrollTop });
       }
     }
   }, []);
@@ -90,9 +84,8 @@ export default function RenderBook({
       const nextVerse = allVerses[currentIndex + 1];
       setSelectedVerses(event.shiftKey ? [...selectedVerses, nextVerse] : [nextVerse]);
       setTimeout(() => {
-        scrollToVerse(nextVerse);
+        scrollToVerse(nextVerse, true);
       }, 0);
-      console.log('line:78 nextVerse\n---> ', nextVerse);
     } else if (event.key === 'ArrowUp' && currentIndex > 0) {
       const previousVerse = allVerses[currentIndex - 1];
       setSelectedVerses(event.shiftKey ? [...selectedVerses, previousVerse] : [previousVerse]);
