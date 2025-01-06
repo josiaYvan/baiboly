@@ -57,9 +57,24 @@ export default function RenderBook({
   const scrollToVerse = useCallback((verseKey) => {
     setSelectedVerse(verseKey);
     const [chapter, verse] = verseKey.split('-');
-    const verseElement = document.getElementById(`verse-${chapter}-${verse - 1}`);
+    const verseElement = document.getElementById(`verse-${chapter}-${verse}`);
+
     if (verseElement) {
-      verseElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const { top: verseTop, height: verseHeight } = verseElement.getBoundingClientRect();
+      const container = containerRef.current;
+
+      if (container) {
+        const { top: containerTop, height: containerHeight } = container.getBoundingClientRect();
+
+        // Positionner le verset au centre ou légèrement au-dessus
+        const targetScrollTop = verseTop + container.scrollTop - containerTop - (containerHeight / 2) + (verseHeight / 2);
+
+        // Effectuer le défilement en douceur
+        container.scrollTo({
+          top: targetScrollTop,
+          behavior: 'smooth'
+        });
+      }
     }
   }, []);
 
