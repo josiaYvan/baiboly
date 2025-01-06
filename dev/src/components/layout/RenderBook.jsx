@@ -65,7 +65,7 @@ export default function RenderBook({
 
       if (container) {
         const { top: containerTop } = container.getBoundingClientRect();
-        const offsetFromTop = isDown ? 132 : 50;
+        const offsetFromTop = 150;
         const targetScrollTop = verseTop + container.scrollTop - containerTop - offsetFromTop;
         container.scrollTo({ top: targetScrollTop });
       }
