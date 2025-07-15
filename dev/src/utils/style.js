@@ -1,0 +1,27 @@
+export const myStyle = {
+  bg: 'rgb(31, 31, 31)',
+  darkColor: 'rgb(157, 155, 155)',
+  brown: 'rgb(84, 61, 70)',
+  gray: 'rgb(142, 142, 142)',
+  white: 'rgb(255, 255, 255)',
+  // light: 'rgb(254, 251, 236)',
+  light: 'rgb(243, 243, 243)',
+  yellowDark: 'hsla(49, 100.00%, 20.20%, 0.24)',
+  yellowPhantom: 'rgba(120, 94, 0, 0.1)',
+  path: 'rgb(229, 229, 229)',
+
+  yellow: 'rgb(227, 178, 0)',
+  orange: 'rgba(227, 117, 0, 1)',
+  blue: 'rgb(41, 140, 221)',
+  red: 'rgb(184, 95, 101)',
+  brun: 'rgba(247, 230, 167, 1)',
+  green: 'rgba(0, 227, 136, 1)',
+  yellowGround: 'rgba(227, 178, 0, 0.2)',
+  orangeGround: 'rgba(227, 117, 0, 0.2)',
+  blueGround: 'rgba(41, 140, 221, 0.2)',
+  redGround: 'rgba(184, 95, 101, 0.2)',
+  brunGround: 'rgba(247, 230, 167, 0.2)',
+  hide: 'rgba(122, 122, 122, 0.45)',
+  greenGround: 'rgba(0, 227, 136, 0.2)',
+  nonGround: 'rgba(0, 227, 136, 0)'
+};
