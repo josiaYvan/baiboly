@@ -110,7 +110,7 @@ export function RenderSong() {
         setExpanded={setExpanded}
       />
 
-      <div className='pt-20'>
+      <div className='pt-40'>
         <div className='w-full flex justify-center py-2 mb-4'>
           <Select
             defaultValue='asc'
@@ -132,6 +132,13 @@ export function RenderSong() {
           <p className='text-center text-gray-500'>Aucun chant trouvé.</p>
         ) : (
           <div className='space-y-3 mb-20'>
+            <div
+              className='absolute top-[10rem] right-6 px-3 py-2 xs:rounded-full rounded-2xl backdrop-blur-sm shadow-lg bg-white/5'
+            >
+              {' '}
+              {data.length}
+              {' '}
+            </div>
             {data.map((chant) => (
               <motion.div
                 layout

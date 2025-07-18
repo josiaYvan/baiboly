@@ -44,13 +44,13 @@ function Home({ themeIsDark, setThemeIsDark }) {
         </div>
 
         <div className={getComponentStyle('Baiboly')}>
-          <div className='flex flex-col items-center max-w-[920px] w-full mx-auto'>
+          <div className='max-w-[920px] w-full mx-auto'>
             <Baiboly themeIsDark={themeIsDark} isActive={currentComponent === 'Baiboly'} />
           </div>
         </div>
 
         <div className={getComponentStyle('Fihirana')}>
-          <div className='flex flex-col items-center max-w-[920px] w-full mx-auto'>
+          <div className='mx-auto max-w-[920px] w-full '>
             <Fihirana themeIsDark={themeIsDark} isActive={currentComponent === 'Fihirana'} />
           </div>
         </div>
