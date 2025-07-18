@@ -102,6 +102,18 @@ code {
   box-shadow: 3px 3px 5px #e2e2e2, -3px -3px 5px #ffffff;
 }
 
+.btn-on-dark {
+  border-radius: 6px;
+  background: #1f1f1f;
+  box-shadow: inset 3px 3px 5px #1d1d1d, inset -3px -3px 5px #212121;
+}
+
+.btn-off-dark {
+  border-radius: 6px;
+  background: #1f1f1f;
+  box-shadow: 3px 3px 5px #1d1d1d, -3px -3px 5px #212121;
+}
+
 .poppins-thin {
   font-family: 'Poppins', sans-serif;
   font-weight: 100;

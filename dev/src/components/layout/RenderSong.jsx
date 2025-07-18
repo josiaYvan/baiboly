@@ -13,7 +13,7 @@ import { capitalizeFirstLetter, copyToClipboard } from '../../utils/funtcion';
 import { MenuFihirana } from './Menu_fihirana';
 import { myStyle } from '../../utils/style';
 
-export function RenderSong() {
+export function RenderSong({ themeIsDark }) {
   const containerRef = useRef(null);
   const chantRefs = useRef({});
   const [activeTab, setActiveTab] = useState('taloha');
@@ -120,10 +120,10 @@ export function RenderSong() {
               type='button'
               key={value}
               onClick={() => setSortCriteria(value)}
-              className={`px-3 py-1 rounded-full border text-sm shadow-sm ${
+              className={`px-3 py-1 rounded-full border text-sm transition duration-500 ease-in-out shadow-sm px-3 py-2 backdrop-blur-sm font-semibold border-none ${
                 sortCriteria === value ?
-                  'px-3 py-2 backdrop-blur-sm btn-on-light font-semibold border-none text-yellow-500' :
-                  'px-3 py-2 backdrop-blur-sm btn-off-light font-semibold border-none'
+                  `${themeIsDark ? 'btn-on-dark' : 'btn-on-light'} text-yellow-500` :
+                  `${themeIsDark ? 'btn-off-dark' : 'btn-off-light'}`
               }`}
             >
               {label}

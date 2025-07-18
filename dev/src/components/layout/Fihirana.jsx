@@ -1,10 +1,10 @@
 import { RenderSong } from './RenderSong';
 
-export function Fihirana() {
+export function Fihirana({ themeIsDark }) {
   return (
     <section id='home'>
       <main className='px-6'>
-        <RenderSong />
+        <RenderSong themeIsDark={themeIsDark} />
       </main>
     </section>
   );
