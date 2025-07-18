@@ -90,6 +90,18 @@ code {
   display: none; /* Pour Chrome, Safari et Opera */
 }
 
+.btn-on-light {
+  border-radius: 6px;
+  background: #f3f3f3;
+  box-shadow: inset 3px 3px 5px #e2e2e2, inset -3px -3px 5px #ffffff;
+}
+
+.btn-off-light {
+  border-radius: 6px;
+  background: #f3f3f3;
+  box-shadow: 3px 3px 5px #e2e2e2, -3px -3px 5px #ffffff;
+}
+
 .poppins-thin {
   font-family: 'Poppins', sans-serif;
   font-weight: 100;

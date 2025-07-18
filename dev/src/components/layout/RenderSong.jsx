@@ -6,8 +6,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
 import { useRef, useState } from 'react';
-import { Select } from 'antd';
-import { Option } from 'antd/es/mentions';
 import { AnimatePresence, motion } from 'framer-motion';
 import { PicCenterOutlined, UpOutlined } from '@ant-design/icons';
 import { fihirana } from '../../utils/fihirana_db';
@@ -111,21 +109,26 @@ export function RenderSong() {
       />
 
       <div className='pt-40'>
-        <div className='w-full flex justify-center py-2 mb-4'>
-          <Select
-            defaultValue='asc'
-            style={{ width: 130 }}
-            bordered={false}
-            size='small'
-            value={sortCriteria}
-            onChange={(value) => setSortCriteria(value)}
-            className='px-3 py-1 rounded-full border border-gray-300 bg-white shadow-sm text-gray-800 text-sm'
-          >
-            <Option value='asc'>Numéro ↑</Option>
-            <Option value='desc'>Numéro ↓</Option>
-            <Option value='titleAsc'>Titre A → Z</Option>
-            <Option value='titleDesc'>Titre Z → A</Option>
-          </Select>
+        <div className='w-full flex justify-center py-2 mb-4 gap-2'>
+          {[
+            { value: 'asc', label: 'Numéro ↑' },
+            { value: 'desc', label: 'Numéro ↓' },
+            { value: 'titleAsc', label: 'Titre A → Z' },
+            { value: 'titleDesc', label: 'Titre Z → A' }
+          ].map(({ value, label }) => (
+            <button
+              type='button'
+              key={value}
+              onClick={() => setSortCriteria(value)}
+              className={`px-3 py-1 rounded-full border text-sm shadow-sm ${
+                sortCriteria === value ?
+                  'px-3 py-2 backdrop-blur-sm btn-on-light font-semibold border-none text-yellow-500' :
+                  'px-3 py-2 backdrop-blur-sm btn-off-light font-semibold border-none'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
         {data.length === 0 ? (
