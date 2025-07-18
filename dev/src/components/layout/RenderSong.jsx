@@ -1,3 +1,4 @@
+/* eslint-disable react/no-danger */
 /* eslint-disable no-useless-escape */
 /* eslint-disable no-return-assign */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
@@ -73,10 +74,7 @@ export function RenderSong() {
       const containerRect = container.getBoundingClientRect();
       const elementRect = element.getBoundingClientRect();
 
-      // Distance du haut de l’élément par rapport au container
       const offset = elementRect.top - containerRect.top;
-
-      // Faire en sorte que le **haut** de l’élément soit à 1/3 du container
       const scrollTop = offset + container.scrollTop - container.clientHeight / 4;
 
       container.scrollTo({ top: scrollTop, behavior: 'smooth' });
@@ -89,6 +87,13 @@ export function RenderSong() {
     const startsWithNumber = /^\d+([\-–—‑‒−]\s*)?/.test(trimmed);
     const startsWithDashAndText = /^[\-–—‑‒−]\s*\w+/.test(trimmed);
     return startsWithNumber || startsWithDashAndText;
+  }
+
+  function highlightSearchTerm(text, term) {
+    if (!term) return text;
+    const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escapedTerm})`, 'gi');
+    return text.replace(regex, '<span class="text-blue-500 font-bold">$1</span>');
   }
 
   return (
@@ -143,7 +148,14 @@ export function RenderSong() {
                   {chant.numero}
                   {' '}
                   -
-                  {expanded === chant.index ? chant.title : capitalizeFirstLetter(chant.title)}
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: highlightSearchTerm(
+                        expanded === chant.index ? chant.title : capitalizeFirstLetter(chant.title),
+                        search
+                      )
+                    }}
+                  />
                 </h2>
 
                 <AnimatePresence initial={false}>
@@ -177,10 +189,11 @@ export function RenderSong() {
                             {strophe.map((line, i) => (
                               <p
                                 key={i}
-                                className={isTitleLine(line) ? 'font-bold text-blue-300' : 'pl-4'}
-                              >
-                                {line}
-                              </p>
+                                className={isTitleLine(line) ? 'font-  text-blue-300' : 'pl-4'}
+                                dangerouslySetInnerHTML={{
+                                  __html: highlightSearchTerm(line, search)
+                                }}
+                              />
                             ))}
                           </div>
                         ));
@@ -198,15 +211,14 @@ export function RenderSong() {
                 title='Retour en haut'
               />
               {expanded !== null && (
-              <PicCenterOutlined
-                onClick={scrollToExpanded}
-                className='fixed bottom-9 right-10 px-4 py-2 rounded-full bg-yellow-400 text-black font-semibold shadow-lg'
-                title='Aller au chant ouvert'
-                type='button'
-              />
+                <PicCenterOutlined
+                  onClick={scrollToExpanded}
+                  className='fixed bottom-9 right-10 px-4 py-2 rounded-full bg-yellow-400 text-black font-semibold shadow-lg'
+                  title='Aller au chant ouvert'
+                  type='button'
+                />
               )}
             </div>
-
           </div>
         )}
       </div>
