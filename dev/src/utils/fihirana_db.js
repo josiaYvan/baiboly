@@ -9860,8 +9860,14 @@ export const fihirana = [
           'Taolana maina lasa nofo',
           'Izay tsy ain’ny olona atao',
           'Dia ainao atao',
-          'Jesosy ieh,',
-          '-\t220- JE SUIS DANS LA JOIE',
+          'Jesosy ieh,'
+        ]
+      },
+      {
+        index: 217,
+        numero: 220,
+        title: 'JE SUIS DANS LA JOIE',
+        lyrics: [
           'Je chanterais de tout cœur les merveilles de mon papa yawé',
           'Qui ma hotté des ténèbres et ma délivré de tous péchés',
           'Mon papa est (le plus) fidèle',

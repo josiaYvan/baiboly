@@ -151,7 +151,7 @@ export function RenderSong({ themeIsDark }) {
               >
                 <h2
                   className={`text-lg lora cursor-pointer tracking-widest ${
-                    expanded === chant.index ? 'font-bold text-yellow-500' : ''
+                    expanded === chant.index ? 'font-bold text-yellow-500 text-center' : ''
                   }`}
                   onClick={() => toggleExpand(chant.index)}
                 >
@@ -199,7 +199,7 @@ export function RenderSong({ themeIsDark }) {
                             {strophe.map((line, i) => (
                               <p
                                 key={i}
-                                className={isTitleLine(line) ? 'font-  text-blue-300' : 'pl-4'}
+                                className={isTitleLine(line) ? 'text-center text-blue-300' : 'text-center'}
                                 dangerouslySetInnerHTML={{
                                   __html: highlightSearchTerm(line, search)
                                 }}
