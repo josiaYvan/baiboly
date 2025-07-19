@@ -1,15 +1,15 @@
-/* eslint-disable react/no-danger */
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-useless-escape */
 /* eslint-disable no-return-assign */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable react/no-danger */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable react/no-array-index-key */
 import { useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { PicCenterOutlined, UpOutlined } from '@ant-design/icons';
-import { fihirana } from '../../utils/fihirana_db';
-import { capitalizeFirstLetter, copyToClipboard } from '../../utils/funtcion';
+import {
+  capitalizeFirstLetter, copyToClipboard, searchSongs, getLyricsByIndex
+} from '../../utils/funtcion';
 import { MenuFihirana } from './Menu_fihirana';
 import { myStyle } from '../../utils/style';
 
@@ -20,86 +20,59 @@ export function RenderSong({ themeIsDark }) {
   const [expanded, setExpanded] = useState(null);
   const [search, setSearch] = useState('');
   const [sortCriteria, setSortCriteria] = useState('asc');
+  const [lyricsCache, setLyricsCache] = useState({});
 
-  const rawData = fihirana[0][activeTab] || [];
-
-  const filteredData = rawData.filter((chant) => {
-    const term = search.toLowerCase();
-    return (
-      chant.title.toLowerCase().includes(term) ||
-      chant.numero.toString().includes(term) ||
-      chant.lyrics.some((line) => line.toLowerCase().includes(term))
-    );
-  });
+  const filteredData = searchSongs(search, activeTab);
 
   const toggleExpand = (index) => {
     setExpanded((prev) => (prev === index ? null : index));
+
+    if (!lyricsCache[index]) {
+      const lyrics = getLyricsByIndex(index, activeTab);
+      setLyricsCache((prev) => ({ ...prev, [index]: lyrics }));
+    }
   };
 
   function sortSongs(songs, criteria) {
     const sorted = [...songs];
     switch (criteria) {
-      case 'asc':
-        sorted.sort((a, b) => a.numero - b.numero);
-        break;
-      case 'desc':
-        sorted.sort((a, b) => b.numero - a.numero);
-        break;
-      case 'titleAsc':
-        sorted.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()));
-        break;
-      case 'titleDesc':
-        sorted.sort((a, b) => b.title.toLowerCase().localeCompare(a.title.toLowerCase()));
-        break;
-      default:
-        break;
+      case 'asc': return sorted.sort((a, b) => a.numero - b.numero);
+      case 'desc': return sorted.sort((a, b) => b.numero - a.numero);
+      case 'titleAsc': return sorted.sort((a, b) => a.title.localeCompare(b.title));
+      case 'titleDesc': return sorted.sort((a, b) => b.title.localeCompare(a.title));
+      default: return sorted;
     }
-    return sorted;
   }
 
   const data = sortSongs(filteredData, sortCriteria);
 
-  const scrollToTop = () => {
-    const container = containerRef.current;
-    container.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const scrollToTop = () => containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
 
   const scrollToExpanded = () => {
-    if (expanded !== null && chantRefs.current[expanded] && containerRef.current) {
-      const container = containerRef.current;
-      const element = chantRefs.current[expanded];
-
-      const containerRect = container.getBoundingClientRect();
-      const elementRect = element.getBoundingClientRect();
-
-      const offset = elementRect.top - containerRect.top;
-      const scrollTop = offset + container.scrollTop - container.clientHeight / 4;
-
-      container.scrollTo({ top: scrollTop, behavior: 'smooth' });
+    const el = chantRefs.current[expanded];
+    if (el && containerRef.current) {
+      const offset = el.getBoundingClientRect().top - containerRef.current.getBoundingClientRect().top;
+      containerRef.current.scrollTo({
+        top: offset + containerRef.current.scrollTop - containerRef.current.clientHeight / 4,
+        behavior: 'smooth'
+      });
     }
   };
 
   function isTitleLine(line, index = 0) {
     if (index !== 0) return false;
     const trimmed = line.trim();
-    const startsWithNumber = /^\d+([\-–—‑‒−]\s*)?/.test(trimmed);
-    const startsWithDashAndText = /^[\-–—‑‒−]\s*\w+/.test(trimmed);
-    return startsWithNumber || startsWithDashAndText;
+    return /^\d+([\-–—‑‒−]\s*)?/.test(trimmed) || /^[\-–—‑‒−]\s*\w+/.test(trimmed);
   }
 
   function highlightSearchTerm(text, term) {
     if (!term) return text;
-    const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(`(${escapedTerm})`, 'gi');
-    return text.replace(regex, '<span class="text-blue-500 font-bold">$1</span>');
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return text.replace(new RegExp(`(${escaped})`, 'gi'), '<span class="text-blue-500 font-bold">$1</span>');
   }
 
   return (
-    <div
-      ref={containerRef}
-      className='relative h-screen overflow-y-scroll hidden-scrollbar px-4'
-      aria-label='Book content container'
-    >
+    <div ref={containerRef} className='relative h-screen overflow-y-scroll hidden-scrollbar px-4'>
       <MenuFihirana
         setActiveTab={setActiveTab}
         activeTab={activeTab}
@@ -120,7 +93,7 @@ export function RenderSong({ themeIsDark }) {
               type='button'
               key={value}
               onClick={() => setSortCriteria(value)}
-              className={`px-3 py-1 rounded-full border text-sm transition duration-500 ease-in-out shadow-sm px-3 py-2 backdrop-blur-sm font-semibold border-none ${
+              className={`px-3 py-1 rounded-full text-sm shadow-sm backdrop-blur-sm font-semibold border-none ${
                 sortCriteria === value ?
                   `${themeIsDark ? 'btn-on-dark' : 'btn-on-light'} text-yellow-500` :
                   `${themeIsDark ? 'btn-off-dark' : 'btn-off-light'}`
@@ -135,19 +108,15 @@ export function RenderSong({ themeIsDark }) {
           <p className='text-center text-gray-500'>Aucun chant trouvé.</p>
         ) : (
           <div className='space-y-3 mb-20'>
-            <div
-              className='absolute top-[10rem] right-6 px-3 py-2 xs:rounded-full rounded-2xl backdrop-blur-sm shadow-lg bg-white/5'
-            >
-              {' '}
+            <div className='absolute top-[10rem] right-6 px-3 py-2 rounded-2xl backdrop-blur-sm shadow-lg bg-white/5'>
               {data.length}
-              {' '}
             </div>
             {data.map((chant) => (
               <motion.div
                 layout
+                key={`${activeTab}-${chant.index}-${chant.numero}`}
                 ref={(el) => chantRefs.current[chant.index] = el}
-                key={chant.index}
-                className='backdrop-blur-sm bg-white/5 border border-white/20 rounded-xl px-4 py-3 shadow transition duration-200'
+                className='backdrop-blur-sm bg-white/5 border border-white/20 rounded-xl px-4 py-3 shadow'
               >
                 <h2
                   className={`text-lg lora cursor-pointer tracking-widest ${
@@ -158,6 +127,7 @@ export function RenderSong({ themeIsDark }) {
                   {chant.numero}
                   {' '}
                   -
+                  {' '}
                   <span
                     dangerouslySetInnerHTML={{
                       __html: highlightSearchTerm(
@@ -175,34 +145,35 @@ export function RenderSong({ themeIsDark }) {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      onDoubleClick={() => copyToClipboard(chant.lyrics.join('\n'))}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
-                      className='overflow-hidden mt-2 space-y-4 text-lg lora'
+                      transition={{ duration: 0.3 }}
+                      onDoubleClick={() => copyToClipboard(lyricsCache[chant.index]?.join('\n') || '')}
+                      className='mt-2 space-y-4 text-lg lora'
                     >
                       {(() => {
+                        const lyrics = lyricsCache[chant.index] || [];
                         const strophes = [];
-                        let currentStrophe = [];
+                        let current = [];
 
-                        chant.lyrics.forEach((line) => {
+                        lyrics.forEach((line) => {
                           if (isTitleLine(line)) {
-                            if (currentStrophe.length) strophes.push(currentStrophe);
-                            currentStrophe = [line];
+                            if (current.length) strophes.push(current);
+                            current = [line];
                           } else {
-                            currentStrophe.push(line);
+                            current.push(line);
                           }
                         });
-
-                        if (currentStrophe.length) strophes.push(currentStrophe);
+                        if (current.length) strophes.push(current);
 
                         return strophes.map((strophe, idx) => (
-                          <div key={idx} className='space-y-1 pl-4'>
+                          <div
+                            key={`${activeTab}-${chant.index}-${chant.numero}-${idx}`}
+                            className='space-y-1 pl-4'
+                          >
                             {strophe.map((line, i) => (
                               <p
                                 key={i}
                                 className={isTitleLine(line) ? 'text-center text-blue-300' : 'text-center'}
-                                dangerouslySetInnerHTML={{
-                                  __html: highlightSearchTerm(line, search)
-                                }}
+                                dangerouslySetInnerHTML={{ __html: highlightSearchTerm(line, search) }}
                               />
                             ))}
                           </div>
@@ -216,16 +187,13 @@ export function RenderSong({ themeIsDark }) {
             <div>
               <UpOutlined
                 onClick={scrollToTop}
-                className='fixed bottom-20 right-10 p-4 text-white rounded-full flex justify-around items-center backdrop-blur-lg shadow cursor-pointer'
+                className='fixed bottom-20 right-10 p-4 text-white rounded-full shadow backdrop-blur-lg cursor-pointer'
                 style={{ backgroundColor: myStyle.yellowPhantom }}
-                title='Retour en haut'
               />
               {expanded !== null && (
                 <PicCenterOutlined
                   onClick={scrollToExpanded}
                   className='fixed bottom-9 right-10 px-4 py-2 rounded-full bg-yellow-400 text-black font-semibold shadow-lg'
-                  title='Aller au chant ouvert'
-                  type='button'
                 />
               )}
             </div>

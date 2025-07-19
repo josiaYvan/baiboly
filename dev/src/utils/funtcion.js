@@ -1,5 +1,6 @@
 const { message } = require('antd');
 const { baiboly } = require('./baiboy_db');
+const { fihirana } = require('./fihirana_db');
 
 /* eslint-disable no-restricted-syntax */
 exports.getBookNames = () => {
@@ -135,4 +136,24 @@ exports.copyToClipboard = (text) => {
       });
     });
   }
+};
+
+exports.getSongsByCategory = (category) => fihirana[0][category]?.map(({ index, numero, title }) => ({ index, numero, title })) || [];
+
+exports.getLyricsByIndex = (index, category) => {
+  const song = fihirana[0][category]?.find((s) => s.index === index);
+  return song?.lyrics || [];
+};
+
+exports.searchSongs = (keyword, category) => {
+  const term = keyword.toLowerCase();
+  const songs = fihirana[0][category] || [];
+
+  return songs
+    .filter(
+      (song) => song.title.toLowerCase().includes(term) ||
+        song.numero.toString().includes(term) ||
+        song.lyrics.some((line) => line.toLowerCase().includes(term))
+    )
+    .map(({ index, numero, title }) => ({ index, numero, title }));
 };
