@@ -48,7 +48,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "merge": "npm run build && cd .. && rmdir /s /q src\\view && mkdir src\\view && xcopy /E /I /Y dev\\build\\* src\\view\\"
   },
   "eslintConfig": {
     "extends": [
