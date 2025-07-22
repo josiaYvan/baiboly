@@ -93,7 +93,7 @@ export function RenderSong({ themeIsDark }) {
               type='button'
               key={value}
               onClick={() => setSortCriteria(value)}
-              className={`px-3 py-1 rounded-full text-sm shadow-sm backdrop-blur-sm font-semibold border-none ${
+              className={`px-3 py-1 rounded-full text-sm shadow-sm backdrop-blur-sm font-semibold border-none transition duration-500 ease-in-out ${
                 sortCriteria === value ?
                   `${themeIsDark ? 'btn-on-dark' : 'btn-on-light'} text-yellow-500` :
                   `${themeIsDark ? 'btn-off-dark' : 'btn-off-light'}`
