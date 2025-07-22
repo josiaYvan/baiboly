@@ -108,9 +108,6 @@ export function RenderSong({ themeIsDark }) {
           <p className='text-center text-gray-500'>Aucun chant trouvé.</p>
         ) : (
           <div className='space-y-3 mb-20'>
-            <div className='absolute top-[10rem] right-6 px-3 py-2 rounded-2xl backdrop-blur-sm shadow-lg bg-white/5'>
-              {data.length}
-            </div>
             {data.map((chant) => (
               <motion.div
                 layout
@@ -190,12 +187,18 @@ export function RenderSong({ themeIsDark }) {
                 className='fixed bottom-20 right-10 p-4 text-white rounded-full shadow backdrop-blur-lg cursor-pointer'
                 style={{ backgroundColor: myStyle.yellowPhantom }}
               />
-              {expanded !== null && (
-                <PicCenterOutlined
-                  onClick={scrollToExpanded}
-                  className='fixed bottom-9 right-10 px-4 py-2 rounded-full bg-yellow-400 text-black font-semibold shadow-lg'
-                />
-              )}
+              <div className='fixed bottom-6 right-10 w-12 h-12'>
+                {expanded !== null ? (
+                  <PicCenterOutlined
+                    onClick={scrollToExpanded}
+                    className='flex items-center justify-center rounded-full bg-yellow-400 text-black font-semibold shadow-lg text-xl cursor-pointer py-1.5 px-2'
+                  />
+                ) : (
+                  <div className='flex items-center justify-center rounded-full bg-yellow-400 text-black text-xs font-semibold shadow-lg p-2'>
+                    {data.length}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
