@@ -27,6 +27,8 @@ export default function RenderBook({
   const chapterRefs = useRef(new Map());
   const [searchResults, setSearchResults] = useState(null);
   const [searchKey, setSearchKey] = useState('');
+  const [pendingScrollChapter, setPendingScrollChapter] = useState(null);
+  const isProgrammaticScroll = useRef(false);
 
   const [fontSize, setFontSize] = useState(20); // en pixels
   const [fontItalic, setFontItalic] = useState(false);
@@ -52,6 +54,8 @@ export default function RenderBook({
   }, [isActive]);
 
   const handleScroll = useCallback(() => {
+    if (isProgrammaticScroll.current) return;
+
     const { scrollTop, scrollHeight, clientHeight } = containerRef.current || {};
     if (!scrollTop || !scrollHeight || !clientHeight) return;
 
@@ -156,13 +160,14 @@ export default function RenderBook({
           Array.from({ length: 5 }, (_, i) => totalChapters - 4 + i) :
           Array.from({ length: 5 }, (_, i) => chapterNumber - 2 + i);
 
+      // Mettre à jour les chapitres visibles
       setVisibleChapters(newVisibleChapters);
-      setTimeout(() => {
-        const chapterElement = chapterRefs.current.get(String(chapterNumber));
-        if (chapterElement) {
-          chapterElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 0);
+
+      // Marquer que c'est un scroll programmatique
+      isProgrammaticScroll.current = true;
+
+      // Stocker le chapitre pour scroller après rendu
+      setPendingScrollChapter(chapterNumber);
     }
   }, [bookContent]);
 
@@ -175,6 +180,24 @@ export default function RenderBook({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
+
+  useEffect(() => {
+    if (pendingScrollChapter !== null) {
+    // attendre que le DOM soit rendu
+      const timeout = setTimeout(() => {
+        const el = chapterRefs.current.get(String(pendingScrollChapter));
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        setPendingScrollChapter(null);
+
+        // désactiver le flag après un court délai
+        setTimeout(() => { isProgrammaticScroll.current = false; }, 300);
+      }, 50); // 50ms pour être sûr que les chapitres sont montés
+
+      return () => clearTimeout(timeout);
+    }
+  }, [pendingScrollChapter, visibleChapters]);
 
   return (
     <div

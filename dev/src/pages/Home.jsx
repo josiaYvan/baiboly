@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Navbar from '../components/layout/navigation';
 import { myStyle } from '../utils/style';
 import Tempo from './Tempo';
@@ -7,10 +7,6 @@ import { Fihirana } from '../components/layout/Fihirana';
 
 function Home({ themeIsDark, setThemeIsDark }) {
   const [currentComponent, setCurrentComponent] = useState('Baiboly');
-
-  useEffect(() => {
-    console.log('line:13 currentComponent\t---> ', currentComponent);
-  }, [currentComponent]);
 
   // Applique styles dynamiques (z-index, opacity) en fonction du composant actif
   const getComponentStyle = (name) => `

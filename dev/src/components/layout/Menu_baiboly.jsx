@@ -59,6 +59,7 @@ function MenuBaiboly({
       setChapter([]);
     } else {
       setSelectedBook(book);
+      setActiveChapter(1);
       onBookSelect(book);
       setChapter(getChaptersByBookName(book));
     }
