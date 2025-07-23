@@ -20,7 +20,7 @@ import { myStyle } from '../../utils/style';
 import { getBookNames, getChaptersByBookName, searchVerse } from '../../utils/funtcion';
 
 function MenuBaiboly({
-  bookName, activeChapter, onBookSelect, setActiveChapter, setSearchResults, setSearchKey, setActiveVerse, decreaseFontSize, increaseFontSize, reinitFontSize, setFontItalic, setActiveVersePositionY
+  bookName, activeChapter, onBookSelect, setSelectedVerse, setActiveChapter, setSearchResults, setSearchKey, setActiveVerse, decreaseFontSize, increaseFontSize, reinitFontSize, setFontItalic, setActiveVersePositionY
 }) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [chapter, setChapter] = useState([]);
@@ -60,6 +60,7 @@ function MenuBaiboly({
     } else {
       setSelectedBook(book);
       setActiveChapter(1);
+      setSelectedVerse(null);
       onBookSelect(book);
       setChapter(getChaptersByBookName(book));
     }

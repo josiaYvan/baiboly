@@ -89,23 +89,45 @@ export default function RenderBook({
     container.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const scrollToVerse = useCallback((verseKey, isDown = false) => {
+  const scrollToVerse = useCallback((verseKey) => {
     setSelectedVerse(verseKey);
-    const [chapter, verse] = verseKey.split('-');
-    const verseElement = document.getElementById(`verse-${chapter}-${verse}`);
+    const [chapter] = verseKey.split('-');
+    const chapterNumber = Number(chapter);
+    const totalChapters = Object.keys(bookContent).length;
 
-    if (verseElement) {
-      const { top: verseTop } = verseElement.getBoundingClientRect();
-      const container = containerRef.current;
+    // Si le chapitre n'est pas visible, on ajuste visibleChapters
+    if (!visibleChapters.includes(chapterNumber)) {
+      const newVisibleChapters = chapterNumber <= 3 ?
+        [1, 2, 3, 4, 5] :
+        chapterNumber >= totalChapters - 2 ?
+          Array.from({ length: 5 }, (_, i) => totalChapters - 4 + i) :
+          Array.from({ length: 5 }, (_, i) => chapterNumber - 2 + i);
 
-      if (container) {
-        const { top: containerTop } = container.getBoundingClientRect();
+      setVisibleChapters(newVisibleChapters);
+
+      // Attendre que React ait monté les chapitres
+      setTimeout(() => {
+        const verseElement = document.getElementById(`verse-${verseKey}`);
+        if (verseElement && containerRef.current) {
+          const { top: verseTop } = verseElement.getBoundingClientRect();
+          const { top: containerTop } = containerRef.current.getBoundingClientRect();
+          const offsetFromTop = activeVersePositionY * 100;
+          const targetScrollTop = verseTop + containerRef.current.scrollTop - containerTop - offsetFromTop;
+          containerRef.current.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
+        }
+      }, 50);
+    } else {
+    // Si déjà visible, scroller directement
+      const verseElement = document.getElementById(`verse-${verseKey}`);
+      if (verseElement && containerRef.current) {
+        const { top: verseTop } = verseElement.getBoundingClientRect();
+        const { top: containerTop } = containerRef.current.getBoundingClientRect();
         const offsetFromTop = activeVersePositionY * 100;
-        const targetScrollTop = verseTop + container.scrollTop - containerTop - offsetFromTop;
-        container.scrollTo({ top: targetScrollTop });
+        const targetScrollTop = verseTop + containerRef.current.scrollTop - containerTop - offsetFromTop;
+        containerRef.current.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
       }
     }
-  }, [activeVersePositionY]);
+  }, [bookContent, visibleChapters, activeVersePositionY]);
 
   const handleKeyDown = useCallback((event) => {
     if (!activeRef.current) return; // ignore les touches si Baiboly n'est pas actif
@@ -288,6 +310,7 @@ export default function RenderBook({
         activeChapter={activeChapter}
         onBookSelect={setSelectedBook}
         setActiveChapter={changeActiveChapter}
+        setSelectedVerse={setSelectedVerse}
         setSearchResults={setSearchResults}
         setSearchKey={setSearchKey}
         setActiveVerse={setActiveVerse}
