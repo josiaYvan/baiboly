@@ -12302,13 +12302,13 @@ export const fihirana = [
         lyrics: [
           'Ny fanahiko manontany',
           'raha mbola misy ny fanantenana ?',
-          "n'anatin'ny ranomaso",
+          'n\'anatin\'ny ranomaso',
           'sy ny vesatry ny ady',
           'ny finoako mihika',
           'Fa Jesosy no miazona ny fahefana',
           'Miasa Mandrakariva',
           '',
-          "Na dia tsy itan'ny masoko",
+          'Na dia tsy itan\'ny masoko',
           'Na tsy mamontsina aza ny aviavy',
           'Izaho mbola hanantena ny sandrinao',
           'Na aloky ny fahafatesana aza',
@@ -12316,8 +12316,8 @@ export const fihirana = [
           'Tsy hatahotra aho, fa eo anilako Ianao',
           'Na mbola eo aza ireo tahotro',
           'Mbola hino aho, fa tsara ny lahatrao',
-          "F'Ianao no tsy miova mandrakizay",
-          'Ny finoana ijoroko: Jesosy matoky Ianao',
+          'F\'Ianao no tsy miova mandrakizay',
+          'Ny finoana ijoroko: Jesosy matoky Ianao'
         ]
       },
       {
@@ -12378,7 +12378,7 @@ export const fihirana = [
           'raha tsy eo ianao',
           'Mba lazao ahy, ampahafantaro ahy',
           'Na maizina no itako',
-          "f'Ianao no fanazavana",
+          'f\'Ianao no fanazavana',
           '',
           'ref',
           'Misaotra Anao aho',
@@ -13198,9 +13198,9 @@ export const fihirana = [
         title: 'Tao betlehema ny alina',
         lyrics: [
           'Tao betlehema ny alina',
-          "Anjely n'nameno ny lanitra",
+          'Anjely n\'nameno ny lanitra',
           'Nihira ny fanantenana',
-          "Tonga n' Mpamonjy",
+          'Tonga ny Mpamonjy',
           'ity noely',
           '',
           'Amintsika ny Mpamonjy',
@@ -13218,7 +13218,7 @@ export const fihirana = [
           'Fa teraka ny andrianan’ny',
           'Fiadanana ity noely'
         ]
-      },
+      }
     ]
   }
 ];
