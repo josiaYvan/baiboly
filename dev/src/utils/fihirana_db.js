@@ -12323,33 +12323,6 @@ export const fihirana = [
       {
         index: 319,
         numero: 319,
-        title: 'Tao betlehema ny alina',
-        lyrics: [
-          'Tao betlehema ny alina',
-          "Anjely n'nameno ny lanitra",
-          'Nihira ny fanantenana',
-          "Tonga n' Mpamonjy",
-          'ity noely',
-          '',
-          'Amintsika ny Mpamonjy',
-          'Jesosy Imanoela',
-          'Hanjaka mandrakizay',
-          'Amin’ity noely',
-          '',
-          'Ireo Magy avy any lavitra',
-          'Nanaraka ny kintana',
-          'Nitondra ireo fanomezana',
-          'Ho an’ny Mpanjaka izay teraka',
-          '',
-          'Fiandanana ho antsika an-tany',
-          'Nahafahan’ny fahoriana',
-          'Fa teraka ny andrianan’ny',
-          'Fiadanana ity noely'
-        ]
-      },
-      {
-        index: 320,
-        numero: 320,
         title: 'Jesosy nampanantena ahy - hololo',
         lyrics: [
           'Jesosy nampanantena ahy',
@@ -12376,8 +12349,8 @@ export const fihirana = [
         ]
       },
       {
-        index: 321,
-        numero: 321,
+        index: 320,
+        numero: 320,
         title: 'Jesosy milanao aho',
         lyrics: [
           'Ny amin’izay tsy efa anio',
@@ -12421,8 +12394,8 @@ export const fihirana = [
         ]
       },
       {
-        index: 322,
-        numero: 322,
+        index: 321,
+        numero: 321,
         title: 'Aminao no miorina ny foko',
         lyrics: [
           'Aiza no hialako amin’ny Fanahinao,',
@@ -12443,8 +12416,8 @@ export const fihirana = [
         ]
       },
       {
-        index: 323,
-        numero: 323,
+        index: 322,
+        numero: 322,
         title: 'Izy anie dia tsara',
         lyrics: [
           'Izy anie dia tsara',
@@ -13218,7 +13191,34 @@ export const fihirana = [
           'Quel est l\'enfant qui est né ce soir',
           'Sinon Dieu que je peux recevoir'
         ]
-      }
+      },
+      {
+        index: 34,
+        numero: 34,
+        title: 'Tao betlehema ny alina',
+        lyrics: [
+          'Tao betlehema ny alina',
+          "Anjely n'nameno ny lanitra",
+          'Nihira ny fanantenana',
+          "Tonga n' Mpamonjy",
+          'ity noely',
+          '',
+          'Amintsika ny Mpamonjy',
+          'Jesosy Imanoela',
+          'Hanjaka mandrakizay',
+          'Amin’ity noely',
+          '',
+          'Ireo Magy avy any lavitra',
+          'Nanaraka ny kintana',
+          'Nitondra ireo fanomezana',
+          'Ho an’ny Mpanjaka izay teraka',
+          '',
+          'Fiandanana ho antsika an-tany',
+          'Nahafahan’ny fahoriana',
+          'Fa teraka ny andrianan’ny',
+          'Fiadanana ity noely'
+        ]
+      },
     ]
   }
 ];
